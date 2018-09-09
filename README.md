@@ -5,5 +5,5 @@
 
 Parse Refract JSON to API Reference Jquery SPA
 
-# Live sample
+## Live sample
 http://ecomclub.github.io/refapp/sample/
