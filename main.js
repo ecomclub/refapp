@@ -5,4 +5,5 @@
  */
 
 window.refapp = (function () {
-})
+  'use strict'
+}())
