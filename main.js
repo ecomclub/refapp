@@ -8,6 +8,8 @@
   'use strict'
 
   // setup as jQuery plugin
-  $.fn.refapp = function () {
+  $.fn.refapp = function (refract) {
+    console.log(this)
+    console.log(refract)
   }
 }(jQuery))
