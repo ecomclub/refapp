@@ -4,6 +4,10 @@
  * @license MIT
  */
 
-window.refapp = (function () {
+(function ($) {
   'use strict'
-}())
+
+  // setup as jQuery plugin
+  $.fn.refapp = function () {
+  }
+}(jQuery))
