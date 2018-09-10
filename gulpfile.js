@@ -4,8 +4,17 @@ const reload = browserSync.reload
 const concat = require('gulp-concat')
 const uglify = require('gulp-uglify')
 const pump = require('pump')
-const gulpSequence = require('gulp-sequence')
 const rename = require('gulp-rename')
+
+let doConcat = function () {
+  // concat main and partials
+  return gulp.src([
+    './partials/refract-query/src/browser-vanilla.js',
+    './main.js'
+  ])
+  .pipe(concat('refapp.js', { newLine: ';' }))
+  .pipe(gulp.dest('./dist/'))
+}
 
 // watch JS and html files
 gulp.task('serve', function () {
@@ -24,17 +33,8 @@ gulp.task('serve', function () {
       }
     }
   })
-  gulp.watch([ './sample/*.html', './main.js' ]).on('change', reload)
-})
-
-gulp.task('concat', function () {
-  // concat main and partials
-  return gulp.src([
-    './partials/refract-query/src/browser-vanilla.js',
-    './main.js'
-  ])
-  .pipe(concat('refapp.js'))
-  .pipe(gulp.dest('./dist/'))
+  gulp.watch([ './main.js' ]).on('change', doConcat)
+  gulp.watch([ './sample/*.html', './dist/refapp.js' ]).on('change', reload)
 })
 
 gulp.task('compress', function (cb) {
@@ -46,5 +46,3 @@ gulp.task('compress', function (cb) {
     gulp.dest('./dist/')
   ], cb)
 })
-
-gulp.task('dist', gulpSequence('concat', 'compress'))
