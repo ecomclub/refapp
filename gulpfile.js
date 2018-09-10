@@ -7,10 +7,17 @@ gulp.task('serve', function () {
   // Serve files from the root of this project
   browserSync.init({
     server: {
-      baseDir: './',
-      index: './sample/index.html'
+      baseDir: './'
+    },
+    middleware: function (req, res, next) {
+      // redirect home to sample folder
+      if (req.url === '/') {
+        res.writeHead(301, { Location: '/sample/' })
+        res.end()
+      } else {
+        return next()
+      }
     }
   })
-  gulp.watch('*.html').on('change', reload)
-  gulp.watch('./main.js').on('change', reload)
+  gulp.watch([ '*.html', './main.js' ]).on('change', reload)
 })
