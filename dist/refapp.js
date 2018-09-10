@@ -116,11 +116,11 @@ elementQuery = { element: 'category', 'meta': { 'classes': 'api' } }
 
     // compose Reference App layout
     var $sidebar = $('<div />', {
-      'class': 'ref-sidebar col-md-4 col-lg-3 col-xl-2 bg-light',
+      'class': 'ref-sidebar col-md-3 col-lg-3 bg-light',
       html: $aside
     })
     var $article = $('<div />', {
-      'class': 'ref-article col-md-4 col-lg-5 col-xl-6'
+      'class': 'ref-article col-md-5 col-lg-5'
     })
     var $console = $('<div />', {
       'class': 'ref-console col-md-4 bg-dark'
@@ -139,16 +139,13 @@ elementQuery = { element: 'category', 'meta': { 'classes': 'api' } }
     // API title
     elementQuery = { element: 'category', meta: { classes: 'api' } }
     element = refractQuery(refract, elementQuery)[0]
-    $aside.append($('<h2 />', {
+    $aside.append($('<h4 />', {
       text: element.meta.title
     }))
 
     this.append($('<div />', {
-      'class': 'container',
-      html: $('<div />', {
-        'class': 'row',
-        html: [ $sidebar, $article, $console ]
-      })
+      'class': 'row',
+      html: [ $sidebar, $article, $console ]
     }))
   }
 }(jQuery))
