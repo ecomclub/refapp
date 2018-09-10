@@ -51,8 +51,10 @@
     elementQuery = { element: 'category', meta: { classes: 'api' } }
     elements = refractQuery(refract, elementQuery)
     if (elements.length) {
+      // set root API Element
+      refract = elements[0]
       $aside.append($('<h4>', {
-        text: elements[0].meta.title
+        text: refract.meta.title
       }))
     }
 
