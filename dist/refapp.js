@@ -137,15 +137,15 @@ elementQuery = { element: 'category', 'meta': { 'classes': 'api' } }
     */
     var elements, elementQuery
 
-    // get API title
+    // set root API Element
     elementQuery = { element: 'category', meta: { classes: 'api' } }
     elements = refractQuery(refract, elementQuery)
     if (elements.length) {
-      // set root API Element
       refract = elements[0]
-      $aside.append($('<h4>', {
-        text: refract.meta.title
-      }))
+      if (!options.apiTitle) {
+        // set API title
+        options.apiTitle = refract.meta.title
+      }
     }
 
     // list resource groups
@@ -170,24 +170,27 @@ elementQuery = { element: 'category', 'meta': { 'classes': 'api' } }
 
     this.append($('<div>', {
       'class': 'container',
-      html: $('<div>', {
-        'class': 'row',
+      html: [
+        '<h2>' + options.apiTitle + '</h2>',
         // compose Reference App layout
-        html: [
-          $('<div>', {
-            'class': 'col-md-3 col-xl-2 ref-sidebar',
-            html: $aside
-          }),
-          $('<div>', {
-            'class': 'col-md-4 col-xl-5 ref-body',
-            html: $article
-          }),
-          $('<div>', {
-            'class': 'col-md-4 col-xl-3 ref-anchors',
-            html: $ul
-          })
-        ]
-      })
+        $('<div>', {
+          'class': 'row pt-3',
+          html: [
+            $('<div>', {
+              'class': 'col-md-3 col-xl-2 border-right pt-2 ref-sidebar',
+              html: $aside
+            }),
+            $('<div>', {
+              'class': 'col pt-2 ref-body',
+              html: $article
+            }),
+            $('<div>', {
+              'class': 'col-md-2 d-none d-md-flex border-left pt-2 ref-anchors',
+              html: $ul
+            })
+          ]
+        })
+      ]
     }))
   }
 }(jQuery))
