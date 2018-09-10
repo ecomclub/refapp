@@ -47,8 +47,7 @@
     window.refractQuery = query
   }
 }())
-
-/**
+;/**
  * refapp
  * @author E-Com Club <ti@e-com.club>
  * @license MIT
