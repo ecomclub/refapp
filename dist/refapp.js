@@ -168,29 +168,34 @@ elementQuery = { element: 'category', 'meta': { 'classes': 'api' } }
       }))
     }
 
-    this.html($('<div>', {
-      'class': 'container',
+    // App DOM element HTML
+    var html = []
+    if (options.apiTitle) {
+      html.push('<h2>' + options.apiTitle + '</h2>')
+    }
+    // compose Reference App layout
+    html.push($('<div>', {
+      'class': 'row pt-3',
       html: [
-        '<h2>' + options.apiTitle + '</h2>',
-        // compose Reference App layout
         $('<div>', {
-          'class': 'row pt-3',
-          html: [
-            $('<div>', {
-              'class': 'col-md-3 col-xl-2 border-right pt-2 ref-sidebar',
-              html: $aside
-            }),
-            $('<div>', {
-              'class': 'col pt-2 ref-body',
-              html: $article
-            }),
-            $('<div>', {
-              'class': 'col-md-2 d-none d-md-flex border-left pt-2 ref-anchors',
-              html: $ul
-            })
-          ]
+          'class': 'col-md-3 col-xl-2 border-right pt-2 ref-sidebar',
+          html: $aside
+        }),
+        $('<div>', {
+          'class': 'col pt-2 ref-body',
+          html: $article
+        }),
+        $('<div>', {
+          'class': 'col-md-2 d-none d-md-flex border-left pt-2 ref-anchors',
+          html: $ul
         })
       ]
+    }))
+
+    // update DOM
+    this.html($('<div>', {
+      'class': 'container',
+      html: html
     }))
   }
 }(jQuery))
