@@ -116,14 +116,14 @@ elementQuery = { element: 'category', 'meta': { 'classes': 'api' } }
 
     // compose Reference App layout
     var $sidebar = $('<div />', {
-      'class': 'ref-sidebar col-md-3 col-xl-2 bg-light',
+      'class': 'ref-sidebar col-md-3 col-xl-2 bg-light p-3',
       html: $aside
     })
     var $article = $('<div />', {
-      'class': 'ref-article col-md-4 col-xl-5'
+      'class': 'ref-article col-md-4 col-xl-5 bg-white py-3 px-5'
     })
     var $console = $('<div />', {
-      'class': 'ref-console col-md-5 bg-dark'
+      'class': 'ref-console col-md-5 bg-dark py-3 px-5'
     })
 
     // console.log(this)
