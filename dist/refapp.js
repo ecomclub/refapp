@@ -178,15 +178,15 @@ elementQuery = { element: 'category', 'meta': { 'classes': 'api' } }
       'class': 'row',
       html: [
         $('<div>', {
-          'class': 'col-md-3 col-xl-2 border-right pt-2 ref-sidebar',
+          'class': 'col-md-3 col-xl-2 border-right pt-3 ref-sidebar',
           html: $aside
         }),
         $('<div>', {
-          'class': 'col pt-2 ref-body',
+          'class': 'col ref-body',
           html: $article
         }),
         $('<div>', {
-          'class': 'col-md-2 d-none d-md-flex border-left pt-2 ref-anchors',
+          'class': 'col-md-2 d-none d-md-flex border-left pt-3 ref-anchors',
           html: $ul
         })
       ]
