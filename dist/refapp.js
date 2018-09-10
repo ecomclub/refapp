@@ -116,14 +116,14 @@ elementQuery = { element: 'category', 'meta': { 'classes': 'api' } }
 
     // compose Reference App layout
     var $sidebar = $('<div />', {
-      'class': 'ref-sidebar col-md-3 col-lg-3 bg-light',
+      'class': 'ref-sidebar col-md-3 col-xl-2 bg-light',
       html: $aside
     })
     var $article = $('<div />', {
-      'class': 'ref-article col-md-5 col-lg-5'
+      'class': 'ref-article col-md-4 col-xl-5'
     })
     var $console = $('<div />', {
-      'class': 'ref-console col-md-4 bg-dark'
+      'class': 'ref-console col-md-5 bg-dark'
     })
 
     // console.log(this)
@@ -144,8 +144,11 @@ elementQuery = { element: 'category', 'meta': { 'classes': 'api' } }
     }))
 
     this.append($('<div />', {
-      'class': 'row',
-      html: [ $sidebar, $article, $console ]
+      'class': 'container-fluid',
+      html: $('<div />', {
+        'class': 'row',
+        html: [ $sidebar, $article, $console ]
+      })
     }))
   }
 }(jQuery))
