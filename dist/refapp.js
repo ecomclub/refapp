@@ -171,11 +171,11 @@ elementQuery = { element: 'category', 'meta': { 'classes': 'api' } }
     // App DOM element HTML
     var html = []
     if (options.apiTitle) {
-      html.push('<h2>' + options.apiTitle + '</h2>')
+      html.push('<h2 class="pb-3">' + options.apiTitle + '</h2>')
     }
     // compose Reference App layout
     html.push($('<div>', {
-      'class': 'row pt-3',
+      'class': 'row',
       html: [
         $('<div>', {
           'class': 'col-md-3 col-xl-2 border-right pt-2 ref-sidebar',
