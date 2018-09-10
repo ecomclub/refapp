@@ -23,17 +23,11 @@
     var $aside = $('<aside>', {
       'class': ''
     })
-
-    // compose Reference App layout
-    var $sidebar = $('<div>', {
-      'class': 'ref-sidebar col-md-3 col-xl-2 bg-light p-4',
-      html: $aside
+    var $article = $('<article>', {
+      'class': ''
     })
-    var $article = $('<div>', {
-      'class': 'ref-article col-md-4 col-xl-5 bg-white py-4 px-5'
-    })
-    var $console = $('<div>', {
-      'class': 'ref-console col-md-5 bg-dark py-4 px-5'
+    var $ul = $('<ul>', {
+      'class': ''
     })
 
     // console.log(this)
@@ -72,17 +66,31 @@
         }))
       }
       // add list element to sidebar
-      $sidebar.append($('<ul>', {
+      $aside.append($('<ul>', {
         'class': 'list-unstyled',
         html: $list
       }))
     }
 
     this.append($('<div>', {
-      'class': 'container-fluid',
+      'class': 'container',
       html: $('<div>', {
         'class': 'row',
-        html: [ $sidebar, $article, $console ]
+        // compose Reference App layout
+        html: [
+          $('<div>', {
+            'class': 'col-md-3 col-xl-2 ref-sidebar',
+            html: $aside
+          }),
+          $('<div>', {
+            'class': 'col-md-4 col-xl-5 ref-body',
+            html: $article
+          }),
+          $('<div>', {
+            'class': 'col-md-4 col-xl-3 ref-anchors',
+            html: $ul
+          })
+        ]
       })
     }))
   }
