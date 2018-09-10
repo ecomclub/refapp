@@ -122,14 +122,14 @@ elementQuery = { element: 'category', 'meta': { 'classes': 'api' } }
 
     // compose Reference App layout
     var $sidebar = $('<div>', {
-      'class': 'ref-sidebar col-md-3 col-xl-2 bg-light p-3',
+      'class': 'ref-sidebar col-md-3 col-xl-2 bg-light p-4',
       html: $aside
     })
     var $article = $('<div>', {
-      'class': 'ref-article col-md-4 col-xl-5 bg-white py-3 px-5'
+      'class': 'ref-article col-md-4 col-xl-5 bg-white py-4 px-5'
     })
     var $console = $('<div>', {
-      'class': 'ref-console col-md-5 bg-dark py-3 px-5'
+      'class': 'ref-console col-md-5 bg-dark py-4 px-5'
     })
 
     // console.log(this)
@@ -158,9 +158,9 @@ elementQuery = { element: 'category', 'meta': { 'classes': 'api' } }
     elementQuery = { element: 'category', meta: { classes: 'resourceGroup' } }
     elements = refractQuery(refract, elementQuery)
     if (elements.length) {
-      var $li = []
+      var $list = []
       for (i = 0; i < elements.length; i++) {
-        $li.push($('<li>', {
+        $list.push($('<li>', {
           html: $('<a>', {
             href: '#',
             text: elements[i].meta.title
@@ -170,7 +170,7 @@ elementQuery = { element: 'category', 'meta': { 'classes': 'api' } }
       // add list element to sidebar
       $sidebar.append($('<ul>', {
         'class': 'list-unstyled',
-        html: $li
+        html: $list
       }))
     }
 
