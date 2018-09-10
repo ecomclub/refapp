@@ -168,7 +168,7 @@ elementQuery = { element: 'category', 'meta': { 'classes': 'api' } }
       }))
     }
 
-    this.append($('<div>', {
+    this.html($('<div>', {
       'class': 'container',
       html: [
         '<h2>' + options.apiTitle + '</h2>',
