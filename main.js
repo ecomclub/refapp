@@ -23,10 +23,6 @@
       })
     }))
 
-    this.$sidebar = $sidebar
-    this.$article = $article
-    this.$console = $console
-
     console.log(this)
     console.log(refract)
   }
