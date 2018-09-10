@@ -1,5 +1,15 @@
 // Simple version for browser compatibility with vanilla JS
-// Original (with Lodash 3): ./index.js
+
+/*
+Original (with Lodash 3):
+https://github.com/apiaryio/refract-query/blob/master/src/index.js
+*/
+
+/*
+Supported element query samples:
+elementQuery = { element: 'category' }
+elementQuery = { element: 'category', 'meta': { 'classes': 'api' } }
+*/
 
 (function () {
   'use strict'
@@ -23,13 +33,8 @@
         results.push(nested[ii])
       }
 
-      var skip = false
-      for (var prop in elementQuery) {
-        if (elementQuery.hasOwnProperty(prop) && el[prop] !== elementQuery[prop]) {
-          skip = true
-          break
-        }
-      }
+      // test query at the current level
+      var skip = !find(el, elementQuery)
       if (!skip) {
         // matched
         results.push(el)
@@ -37,6 +42,48 @@
     }
 
     return results
+  }
+
+  // set find function for recursion
+  var find = function (el, elementQuery) {
+    for (var prop in elementQuery) {
+      if (elementQuery.hasOwnProperty(prop)) {
+        var match = false
+        var val = elementQuery[prop]
+        var obj = el[prop]
+
+        // check type first
+        if (typeof val === 'object' && val !== null) {
+          if (typeof obj === 'object' && obj !== null) {
+            // try recursion
+            match = find(obj, val)
+          } else {
+            // element has not current property
+            return false
+          }
+        } else {
+          // support checking string or number within array
+          if (!Array.isArray(obj)) {
+            obj = [ obj ]
+          }
+          for (var i = 0; i < obj.length; i++) {
+            if (obj[i] === val) {
+              match = true
+              break
+            }
+          }
+        }
+
+        if (!match) {
+          // not matched
+          // does not need to continue
+          return false
+        }
+      }
+    }
+
+    // goes here if matched
+    return true
   }
 
   if (typeof module !== 'undefined' && module.exports) {
@@ -54,6 +101,7 @@
  */
 
 // require './partials/refract-query/src/browser-vanilla.js'
+/* global refractQuery */
 
 (function ($) {
   'use strict'
@@ -61,9 +109,15 @@
   // setup as jQuery plugin
   $.fn.refapp = function (refract, options) {
     // create DOM elements
+    // main app Components
+    var $aside = $('<aside />', {
+      'class': ''
+    })
+
     // compose Reference App layout
     var $sidebar = $('<div />', {
-      'class': 'ref-sidebar col-md-4 col-lg-3 col-xl-2 bg-light'
+      'class': 'ref-sidebar col-md-4 col-lg-3 col-xl-2 bg-light',
+      html: $aside
     })
     var $article = $('<div />', {
       'class': 'ref-article col-md-4 col-lg-5 col-xl-6'
@@ -71,14 +125,6 @@
     var $console = $('<div />', {
       'class': 'ref-console col-md-4 bg-dark'
     })
-
-    this.append($('<div />', {
-      'class': 'container',
-      html: $('<div />', {
-        'class': 'row',
-        html: [ $sidebar, $article, $console ]
-      })
-    }))
 
     // console.log(this)
     // console.log(refract)
@@ -89,11 +135,20 @@
     https://github.com/apiaryio/drafter
     https://api-elements.readthedocs.io/en/latest/
     */
-    var i
-    if (typeof refract === 'object' && refract !== null && Array.isArray(refract.content)) {
-      for (i = 0; i < refract.content.length; i++) {
-        console.log(refract.content[i])
-      }
-    }
+    var element, elementQuery
+    // API title
+    elementQuery = { element: 'category', meta: { classes: 'api' } }
+    element = refractQuery(refract, elementQuery)[0]
+    $aside.append($('<h2 />', {
+      text: element.meta.title
+    }))
+
+    this.append($('<div />', {
+      'class': 'container',
+      html: $('<div />', {
+        'class': 'row',
+        html: [ $sidebar, $article, $console ]
+      })
+    }))
   }
 }(jQuery))
