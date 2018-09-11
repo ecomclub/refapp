@@ -51,9 +51,11 @@
           break
 
         case 'category':
+        case 'resource':
           var className = elementMeta(refract, 'classes')
           var title = elementMeta(refract, 'title')
           var id = title
+          var $li
           if (title !== '') {
             // show category title
             var head
@@ -67,34 +69,36 @@
               default:
                 head = 3
             }
+
             // add title to body DOM
-            $body.append([
-              $('<h' + head + '>', {
-                html: $('<a>', {
-                  'class': 'anchor-link text-body',
-                  href: '#' + id,
-                  text: title
-                }),
-                id: id
+            $body.append($('<h' + head + '>', {
+              html: $('<a>', {
+                'class': 'anchor-link text-body',
+                href: '#' + id,
+                text: title
               }),
-              '<hr>'
-            ])
-            // add to anchors list
-            $list.append($('<li>', {
+              id: id
+            }))
+
+            $li = $('<li>', {
               html: $('<a>', {
                 href: '#' + id,
                 text: title
               })
-            }))
+            })
+            // add to anchors list
+            $list.append($li)
           }
 
           // check each child element one by one
-          if (!Array.isArray(content)) {
-            content = [ content ]
-          }
-          for (var i = 0; i < content.length; i++) {
-            // recursion
-            consume(content[i], options, $body, $list)
+          if (Array.isArray(content) && content.length) {
+            // create new deeper list for subresources
+            var $ul = $('<ul>')
+            $li.append($ul)
+            for (var i = 0; i < content.length; i++) {
+              // recursion
+              consume(content[i], options, $body, $ul)
+            }
           }
           break
 
