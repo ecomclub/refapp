@@ -46,7 +46,7 @@
           if (typeof content === 'string') {
             // Markdown string
             // append to parent body element
-            $body.append('<div class="mb-5">' + options.mdParser(content) + '</div>')
+            $body.append('<div class="pb-2">' + options.mdParser(content) + '</div>')
           }
           break
 
@@ -72,6 +72,7 @@
 
             // add title to body DOM
             $body.append($('<h' + head + '>', {
+              'class': 'my-3',
               html: $('<a>', {
                 'class': 'anchor-link text-body',
                 href: '#' + id,
@@ -98,11 +99,31 @@
             // create new deeper list for subresources
             var $ul = $('<ul>')
             $li.append($ul)
+            // new block for category
+            var $div = $('<div>', {
+              'class': 'mb-5'
+            })
+            $body.append($div)
             for (var i = 0; i < content.length; i++) {
               // recursion
-              consume(content[i], options, $body, $ul)
+              consume(content[i], options, $div, $ul)
             }
           }
+
+          // treat API Element attributes
+          var attr = refract.attributes
+          if (attr) {
+            // console.log(attr)
+          }
+          break
+
+        case 'transition':
+          // button to API request
+          var $btn = $('<button>', {
+            'class': 'mt-2 btn btn-lg btn-block btn-primary',
+            text: elementMeta(refract, 'title')
+          })
+          $body.append($btn)
           break
 
         case 'parseResult':

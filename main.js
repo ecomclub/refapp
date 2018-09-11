@@ -70,15 +70,15 @@
         'class': 'row',
         html: [
           $('<div>', {
-            'class': 'col-md-3 col-xl-2 pt-3 ref-sidebar',
+            'class': 'col-md-3 col-xl-2 pt-4 ref-sidebar',
             html: $aside
           }),
           $('<div>', {
-            'class': 'col pt-3 px-5 ref-body',
+            'class': 'col px-5 ref-body',
             html: $article
           }),
           $('<div>', {
-            'class': 'col-md-2 d-none d-md-flex pt-3 ref-anchors',
+            'class': 'col-md-2 d-none d-md-flex pt-4 ref-anchors',
             html: $ol
           })
         ]
