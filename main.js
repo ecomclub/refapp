@@ -12,6 +12,7 @@
 
   // setup as jQuery plugin
   $.fn.refapp = function (refract, Options) {
+    // @TODO: refract to refracts (work with refract fragments)
     var i
     // default options object
     var options = {
