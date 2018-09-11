@@ -115,7 +115,9 @@ elementQuery = { element: 'category', 'meta': { 'classes': 'api' } }
       // styles
       asideClasses: '',
       articleClasses: '',
-      ulClasses: ''
+      olClasses: '',
+      // parse Markdown to HTML
+      mdParser: function (md) { return md }
     }
     if (Options) {
       Object.assign(options, Options)
@@ -129,8 +131,8 @@ elementQuery = { element: 'category', 'meta': { 'classes': 'api' } }
     var $article = $('<article>', {
       'class': options.articleClasses
     })
-    var $ul = $('<ul>', {
-      'class': options.ulClasses
+    var $ol = $('<ol>', {
+      'class': options.olClasses
     })
 
     // console.log(this)
@@ -142,7 +144,7 @@ elementQuery = { element: 'category', 'meta': { 'classes': 'api' } }
     https://github.com/apiaryio/drafter
     https://api-elements.readthedocs.io/en/latest/
     */
-    var elements, elementQuery
+    var element, elements, elementQuery
 
     // set root API Element
     elementQuery = { element: 'category', meta: { classes: 'api' } }
@@ -153,6 +155,7 @@ elementQuery = { element: 'category', 'meta': { 'classes': 'api' } }
         // set API title
         options.apiTitle = refract.meta.title
       }
+      $aside.append('<h5>' + options.apiTitle + '</h5>')
     }
 
     // list resource groups
@@ -168,19 +171,18 @@ elementQuery = { element: 'category', 'meta': { 'classes': 'api' } }
           })
         }))
       }
-      // add list element to sidebar
-      $aside.append($('<ul>', {
-        'class': 'list-unstyled',
-        html: $list
-      }))
+      // add list element to right side ul
+      $ol.append($list)
     }
 
-    // App body DOM element HTML
-    var html = []
-    if (options.apiTitle) {
-      html.push('<h2>' + options.apiTitle + '</h2><hr>')
+    if (Array.isArray(refract.content)) {
+      for (i = 0; i < refract.content.length; i++) {
+        element = refract.content[i]
+        if (element.element === 'copy') {
+          $article.append(options.mdParser(element.content))
+        }
+      }
     }
-    html.push($article)
 
     // update DOM
     this.html($('<div>', {
@@ -190,16 +192,16 @@ elementQuery = { element: 'category', 'meta': { 'classes': 'api' } }
         'class': 'row',
         html: [
           $('<div>', {
-            'class': 'col-md-3 col-xl-2 border-right pt-3 ref-sidebar',
+            'class': 'col-md-3 col-xl-2 pt-3 ref-sidebar',
             html: $aside
           }),
           $('<div>', {
             'class': 'col py-3 px-5 ref-body',
-            html: html
+            html: $article
           }),
           $('<div>', {
-            'class': 'col-md-2 d-none d-md-flex border-left pt-3 ref-anchors',
-            html: $ul
+            'class': 'col-md-2 d-none d-md-flex pt-3 ref-anchors',
+            html: $ol
           })
         ]
       })
