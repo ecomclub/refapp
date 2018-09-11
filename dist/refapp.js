@@ -53,6 +53,7 @@
         case 'category':
           var className = elementMeta(refract, 'classes')
           var title = elementMeta(refract, 'title')
+          var id = title
           if (title !== '') {
             // show category title
             var head
@@ -69,11 +70,22 @@
             // add title to body DOM
             $body.append([
               $('<h' + head + '>', {
-                text: title,
-                id: title
+                html: $('<a>', {
+                  'class': 'anchor-link text-body',
+                  href: '#' + id,
+                  text: title
+                }),
+                id: id
               }),
               '<hr>'
             ])
+            // add to anchors list
+            $list.append($('<li>', {
+              html: $('<a>', {
+                href: '#' + id,
+                text: title
+              })
+            }))
           }
 
           // check each child element one by one
