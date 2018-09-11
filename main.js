@@ -79,6 +79,14 @@
       $ol.append($list)
     }
 
+    // get main level paragraphs
+    elementQuery = { element: 'copy' }
+    // current level only, noDeep = true
+    elements = refractQuery(refract, elementQuery, true)
+    for (i = 0; i < elements.length; i++) {
+      $article.append(options.mdParser(elements[i].content))
+    }
+
     // update DOM
     this.html($('<div>', {
       'class': 'container',
