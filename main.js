@@ -11,23 +11,29 @@
   'use strict'
 
   // setup as jQuery plugin
-  $.fn.refapp = function (refract, options) {
+  $.fn.refapp = function (refract, Options) {
     var i
-    if (!options) {
-      // default empty options object
-      options = {}
+    // default options object
+    var options = {
+      // styles
+      asideClasses: '',
+      articleClasses: '',
+      ulClasses: ''
+    }
+    if (Options) {
+      Object.assign(options, Options)
     }
 
     // create DOM elements
     // main app Components
     var $aside = $('<aside>', {
-      'class': ''
+      'class': options.asideClasses
     })
     var $article = $('<article>', {
-      'class': ''
+      'class': options.articleClasses
     })
     var $ul = $('<ul>', {
-      'class': ''
+      'class': options.ulClasses
     })
 
     // console.log(this)
@@ -72,34 +78,36 @@
       }))
     }
 
-    // App DOM element HTML
+    // App body DOM element HTML
     var html = []
     if (options.apiTitle) {
-      html.push('<h2 class="pb-3">' + options.apiTitle + '</h2>')
+      html.push($('<h2>', {
+        text: options.apiTitle
+      }), '<hr />')
     }
-    // compose Reference App layout
-    html.push($('<div>', {
-      'class': 'row',
-      html: [
-        $('<div>', {
-          'class': 'col-md-3 col-xl-2 border-right pt-3 ref-sidebar',
-          html: $aside
-        }),
-        $('<div>', {
-          'class': 'col ref-body',
-          html: $article
-        }),
-        $('<div>', {
-          'class': 'col-md-2 d-none d-md-flex border-left pt-3 ref-anchors',
-          html: $ul
-        })
-      ]
-    }))
+    html.push($article)
 
     // update DOM
     this.html($('<div>', {
       'class': 'container',
-      html: html
+      // compose Reference App layout
+      html: $('<div>', {
+        'class': 'row',
+        html: [
+          $('<div>', {
+            'class': 'col-md-3 col-xl-2 border-right pt-3 ref-sidebar',
+            html: $aside
+          }),
+          $('<div>', {
+            'class': 'col py-3 px-5 ref-body',
+            html: html
+          }),
+          $('<div>', {
+            'class': 'col-md-2 d-none d-md-flex border-left pt-3 ref-anchors',
+            html: $ul
+          })
+        ]
+      })
     }))
   }
 }(jQuery))
