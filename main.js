@@ -48,7 +48,7 @@
     https://github.com/apiaryio/drafter
     https://api-elements.readthedocs.io/en/latest/
     */
-    var elements, elementQuery
+    var elements, elementQuery, resourceGroups
 
     // set root API Element
     elementQuery = { element: 'category', meta: { classes: 'api' } }
@@ -62,29 +62,53 @@
       $aside.append('<h5>' + options.apiTitle + '</h5>')
     }
 
-    // list resource groups
-    elementQuery = { element: 'category', meta: { classes: 'resourceGroup' } }
-    elements = refractQuery(refract, elementQuery)
-    if (elements.length) {
-      var $list = []
-      for (i = 0; i < elements.length; i++) {
-        $list.push($('<li>', {
-          html: $('<a>', {
-            href: '#',
-            text: elements[i].meta.title
-          })
-        }))
-      }
-      // add list element to right side ul
-      $ol.append($list)
-    }
-
     // get main level paragraphs
     elementQuery = { element: 'copy' }
     // current level only, noDeep = true
     elements = refractQuery(refract, elementQuery, true)
     for (i = 0; i < elements.length; i++) {
       $article.append(options.mdParser(elements[i].content))
+    }
+
+    // list resource groups
+    elementQuery = { element: 'category', meta: { classes: 'resourceGroup' } }
+    resourceGroups = refractQuery(refract, elementQuery)
+    if (resourceGroups.length) {
+      // list and link resources
+      var $list = []
+      // create block elements for each resource
+      var $cards = []
+
+      for (i = 0; i < resourceGroups.length; i++) {
+        var name = resourceGroups[i].meta.title
+        var id = name
+        // list element
+        $list.push($('<li>', {
+          html: $('<a>', {
+            href: '#' + id,
+            text: name
+          })
+        }))
+        // resource card block
+        $cards.push($('<div>', {
+          'class': 'card mt-4',
+          html: [
+            $('<h5>', {
+              'class': 'card-header',
+              id: id,
+              text: name
+            }),
+            $('<div>', {
+              'class': 'card-body'
+            })
+          ]
+        }))
+      }
+
+      // add list elements to right side ul
+      $ol.append($list)
+      // add collapse elements to article
+      $article.append($cards)
     }
 
     // update DOM
