@@ -54,7 +54,7 @@
         case 'resource':
           var className = elementMeta(refract, 'classes')
           var title = elementMeta(refract, 'title')
-          var id = title
+          var id = title.toLowerCase().replace(/\s/g, '-')
           var $li
           if (title !== '') {
             // show category title
