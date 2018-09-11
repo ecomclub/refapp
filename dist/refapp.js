@@ -177,9 +177,7 @@ elementQuery = { element: 'category', 'meta': { 'classes': 'api' } }
     // App body DOM element HTML
     var html = []
     if (options.apiTitle) {
-      html.push($('<h2>', {
-        text: options.apiTitle
-      }), '<hr />')
+      html.push('<h2>' + options.apiTitle + '</h2><hr>')
     }
     html.push($article)
 
