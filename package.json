@@ -30,7 +30,6 @@
       "XMLHttpRequest",
       "XDomainRequest",
       "window",
-      "$",
       "jQuery",
       "alert",
       "location",

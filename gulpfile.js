@@ -6,12 +6,14 @@ const uglify = require('gulp-uglify')
 const pump = require('pump')
 const rename = require('gulp-rename')
 
+let jsFragments = [
+  './partials/consume-refract.js',
+  './main.js'
+]
+
 let doConcat = function () {
   // concat main and partials
-  return gulp.src([
-    './partials/refract-query/src/browser-vanilla.js',
-    './main.js'
-  ])
+  return gulp.src(jsFragments)
   .pipe(concat('refapp.js', { newLine: ';' }))
   .pipe(gulp.dest('./dist/'))
 }
@@ -33,7 +35,7 @@ gulp.task('serve', function () {
       }
     }
   })
-  gulp.watch([ './main.js' ]).on('change', doConcat)
+  gulp.watch(jsFragments).on('change', doConcat)
   gulp.watch([ './sample/*.html', './dist/refapp.js' ]).on('change', reload)
 })
 

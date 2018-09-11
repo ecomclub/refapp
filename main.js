@@ -4,49 +4,26 @@
  * @license MIT
  */
 
-// require './partials/refract-query/src/browser-vanilla.js'
-/* global refractQuery */
-
 (function ($) {
   'use strict'
 
-  // function to parse Markdown to HTML
-  var mdParser
-
-  var textContent = function (element) {
-    // returns paragraphs from API Element
-    // current level only, noDeep = true
-    var elements = refractQuery(element, { element: 'copy' }, true)
-    var md = ''
-    // concat Markdown strings
-    for (var i = 0; i < elements.length; i++) {
-      md += elements[i].content
-    }
-    if (typeof mdParser === 'function') {
-      // parse to HTML
-      return mdParser(md)
-    } else {
-      return md
-    }
-  }
+  // require 'partials/consume-refract.js'
+  /* global consumeRefract */
 
   // setup as jQuery plugin
   $.fn.refapp = function (refract, Options) {
     // @TODO: refract to refracts (work with refract fragments)
-    var i
     // default options object
     var options = {
       // styles
       asideClasses: '',
       articleClasses: '',
-      olClasses: ''
+      olClasses: '',
+      // parse Markdown to HTML
+      mdParser: function (md) { return md }
     }
     if (Options) {
       Object.assign(options, Options)
-      if (options.mdParser) {
-        // set parser
-        mdParser = options.mdParser
-      }
     }
 
     // create DOM elements
@@ -70,66 +47,20 @@
     https://github.com/apiaryio/drafter
     https://api-elements.readthedocs.io/en/latest/
     */
-    var elements, elementQuery, resourceGroups
 
     // set root API Element
-    elementQuery = { element: 'category', meta: { classes: 'api' } }
-    elements = refractQuery(refract, elementQuery)
-    if (elements.length) {
-      refract = elements[0]
-      if (!options.apiTitle && refract.meta.title !== '') {
-        // set API title
-        options.apiTitle = refract.meta.title
-      }
+    if (refract.element === 'parseResult') {
+      refract = refract.content[0]
+    }
+    if (!options.apiTitle) {
+      // set API title
+      options.apiTitle = refract.meta.title
+    }
+    if (options.apiTitle !== '') {
       $aside.append('<h5>' + options.apiTitle + '</h5>')
     }
-
-    // get main level paragraphs
-    var html = textContent(refract)
-    if (html !== '') {
-      $article.append('<div class="mt-3">' + html + '</div>')
-    }
-
-    // list resource groups
-    elementQuery = { element: 'category', meta: { classes: 'resourceGroup' } }
-    resourceGroups = refractQuery(refract, elementQuery)
-    if (resourceGroups.length) {
-      // list and link resources
-      var $list = []
-      // create block elements for each resource
-      var $divs = []
-
-      for (i = 0; i < resourceGroups.length; i++) {
-        var name = resourceGroups[i].meta.title
-        var id = name
-        // list element
-        $list.push($('<li>', {
-          html: $('<a>', {
-            href: '#' + id,
-            text: name
-          })
-        }))
-
-        // resource block
-        $divs.push($('<div>', {
-          'class': 'mt-3',
-          html: [
-            $('<h2>', {
-              id: id,
-              text: name
-            }),
-            '<hr>',
-            // get resource level paragraphs
-            textContent(resourceGroups[i])
-          ]
-        }))
-      }
-
-      // add list elements to right side ul
-      $ol.append($list)
-      // add collapse elements to article
-      $article.append($divs)
-    }
+    // consume refract tree
+    consumeRefract(refract, options, $article, $ol)
 
     // update DOM
     this.html($('<div>', {
