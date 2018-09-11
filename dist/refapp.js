@@ -6,40 +6,76 @@
 (function ($) {
   'use strict'
 
+  var elementMeta = function (element, prop) {
+    // metadata from API Element object
+    if (typeof element === 'object' && element !== null) {
+      var meta = element.meta
+      if (typeof meta === 'object' && meta !== null) {
+        // valid meta object
+        if (!prop) {
+          return meta
+        } else if (meta[prop]) {
+          if (Array.isArray(meta[prop])) {
+            // returns first array element
+            return meta[prop][0]
+          } else {
+            return meta[prop]
+          }
+        }
+      }
+    }
+
+    // not found
+    if (prop) {
+      return ''
+    } else {
+      // empty object
+      return {}
+    }
+  }
+
   var consume = function (refract, options, $body, $list) {
     // check refract object
-    if (typeof refract !== 'object' || refract === null) {
-      return
+    if (typeof refract === 'object' && refract !== null) {
+      // treat API Element object
+      // Ref.: https://api-elements.readthedocs.io/en/latest/element-definitions.html
+      var type = refract.element
+      var content = refract.content
+      switch (type) {
+        case 'copy':
+          if (typeof content === 'string') {
+            // Markdown string
+            // append to parent body element
+            $body.append('<div class="mt-3">' + options.mdParser(content) + '</div>')
+          }
+          break
+
+        case 'category':
+          if (!Array.isArray(content)) {
+            content = [ content ]
+          }
+          // check each content one by one
+          for (var i = 0; i < content.length; i++) {
+            // recursion
+            consume(content[i], options, $body, $list)
+          }
+          break
+
+        case 'parseResult':
+          if (Array.isArray(content)) {
+            // fix root API Element
+            return content[0]
+          }
+      }
     }
 
-    // treat API Element object
-    // Ref.: https://api-elements.readthedocs.io/en/latest/element-definitions.html
-    var type = refract.element
-    var content = refract.content
-    switch (type) {
-      case 'copy':
-        if (typeof content === 'string') {
-          // Markdown string
-          // append to parent body element
-          $body.append('<div class="mt-3">' + options.mdParser(content) + '</div>')
-        }
-        break
-
-      case 'category':
-        if (!Array.isArray(content)) {
-          content = [ content ]
-        }
-        // check each content one by one
-        for (var i = 0; i < content.length; i++) {
-          // recursion
-          consume(content[i], options, $body, $list)
-        }
-        break
-    }
+    // all done
+    return null
   }
 
   // set globally
   window.consumeRefract = consume
+  window.apiElementMeta = elementMeta
 }(jQuery))
 ;/**
  * refapp
@@ -52,6 +88,7 @@
 
   // require 'partials/consume-refract.js'
   /* global consumeRefract */
+  /* global apiElementMeta */
 
   // setup as jQuery plugin
   $.fn.refapp = function (refract, Options) {
@@ -91,19 +128,18 @@
     https://api-elements.readthedocs.io/en/latest/
     */
 
-    // set root API Element
-    if (refract.element === 'parseResult') {
-      refract = refract.content[0]
-    }
-    if (!options.apiTitle) {
-      // set API title
-      options.apiTitle = refract.meta.title
+    // consume refract tree
+    while (refract) {
+      // root API Element fixed
+      refract = consumeRefract(refract, options, $article, $ol)
+      if (!options.apiTitle) {
+        // try to set API title
+        options.apiTitle = apiElementMeta(refract, 'title')
+      }
     }
     if (options.apiTitle !== '') {
       $aside.append('<h5>' + options.apiTitle + '</h5>')
     }
-    // consume refract tree
-    consumeRefract(refract, options, $article, $ol)
 
     // update DOM
     this.html($('<div>', {

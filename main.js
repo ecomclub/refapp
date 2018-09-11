@@ -9,6 +9,7 @@
 
   // require 'partials/consume-refract.js'
   /* global consumeRefract */
+  /* global apiElementMeta */
 
   // setup as jQuery plugin
   $.fn.refapp = function (refract, Options) {
@@ -48,19 +49,18 @@
     https://api-elements.readthedocs.io/en/latest/
     */
 
-    // set root API Element
-    if (refract.element === 'parseResult') {
-      refract = refract.content[0]
-    }
-    if (!options.apiTitle) {
-      // set API title
-      options.apiTitle = refract.meta.title
+    // consume refract tree
+    while (refract) {
+      // root API Element fixed
+      refract = consumeRefract(refract, options, $article, $ol)
+      if (!options.apiTitle) {
+        // try to set API title
+        options.apiTitle = apiElementMeta(refract, 'title')
+      }
     }
     if (options.apiTitle !== '') {
       $aside.append('<h5>' + options.apiTitle + '</h5>')
     }
-    // consume refract tree
-    consumeRefract(refract, options, $article, $ol)
 
     // update DOM
     this.html($('<div>', {
