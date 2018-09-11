@@ -108,6 +108,26 @@ elementQuery = { element: 'category', 'meta': { 'classes': 'api' } }
 (function ($) {
   'use strict'
 
+  // function to parse Markdown to HTML
+  var mdParser
+
+  var textContent = function (element) {
+    // returns paragraphs from API Element
+    // current level only, noDeep = true
+    var elements = refractQuery(element, { element: 'copy' }, true)
+    var md = ''
+    // concat Markdown strings
+    for (var i = 0; i < elements.length; i++) {
+      md += elements[i].content
+    }
+    if (typeof mdParser === 'function') {
+      // parse to HTML
+      return mdParser(md)
+    } else {
+      return md
+    }
+  }
+
   // setup as jQuery plugin
   $.fn.refapp = function (refract, Options) {
     // @TODO: refract to refracts (work with refract fragments)
@@ -117,12 +137,14 @@ elementQuery = { element: 'category', 'meta': { 'classes': 'api' } }
       // styles
       asideClasses: '',
       articleClasses: '',
-      olClasses: '',
-      // parse Markdown to HTML
-      mdParser: function (md) { return md }
+      olClasses: ''
     }
     if (Options) {
       Object.assign(options, Options)
+      if (options.mdParser) {
+        // set parser
+        mdParser = options.mdParser
+      }
     }
 
     // create DOM elements
@@ -161,12 +183,7 @@ elementQuery = { element: 'category', 'meta': { 'classes': 'api' } }
     }
 
     // get main level paragraphs
-    elementQuery = { element: 'copy' }
-    // current level only, noDeep = true
-    elements = refractQuery(refract, elementQuery, true)
-    for (i = 0; i < elements.length; i++) {
-      $article.append(options.mdParser(elements[i].content))
-    }
+    $article.append(textContent(refract))
 
     // list resource groups
     elementQuery = { element: 'category', meta: { classes: 'resourceGroup' } }
@@ -187,18 +204,22 @@ elementQuery = { element: 'category', 'meta': { 'classes': 'api' } }
             text: name
           })
         }))
+
         // resource card block
+        var $cardBody = $('<div>', {
+          'class': 'card-body',
+          // get resource level paragraphs
+          html: textContent(resourceGroups[i])
+        })
         $cards.push($('<div>', {
-          'class': 'card mt-4',
+          'class': 'card mt-5',
           html: [
             $('<h5>', {
               'class': 'card-header',
               id: id,
               text: name
             }),
-            $('<div>', {
-              'class': 'card-body'
-            })
+            $cardBody
           ]
         }))
       }
