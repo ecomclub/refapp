@@ -79,6 +79,9 @@
               }),
               id: id
             }))
+            if (head <= 2) {
+              $body.append('<hr>')
+            }
 
             $li = $('<li>', {
               html: $('<a>', {
