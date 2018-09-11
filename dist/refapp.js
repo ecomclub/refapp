@@ -153,7 +153,7 @@ elementQuery = { element: 'category', 'meta': { 'classes': 'api' } }
     elements = refractQuery(refract, elementQuery)
     if (elements.length) {
       refract = elements[0]
-      if (!options.apiTitle) {
+      if (!options.apiTitle && refract.meta.title !== '') {
         // set API title
         options.apiTitle = refract.meta.title
       }
