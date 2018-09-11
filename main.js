@@ -85,7 +85,10 @@
     }
 
     // get main level paragraphs
-    $article.append(textContent(refract))
+    var html = textContent(refract)
+    if (html !== '') {
+      $article.append('<div class="mt-3">' + html + '</div>')
+    }
 
     // list resource groups
     elementQuery = { element: 'category', meta: { classes: 'resourceGroup' } }
@@ -94,7 +97,7 @@
       // list and link resources
       var $list = []
       // create block elements for each resource
-      var $cards = []
+      var $divs = []
 
       for (i = 0; i < resourceGroups.length; i++) {
         var name = resourceGroups[i].meta.title
@@ -107,21 +110,17 @@
           })
         }))
 
-        // resource card block
-        var $cardBody = $('<div>', {
-          'class': 'card-body',
-          // get resource level paragraphs
-          html: textContent(resourceGroups[i])
-        })
-        $cards.push($('<div>', {
-          'class': 'card mt-5',
+        // resource block
+        $divs.push($('<div>', {
+          'class': 'mt-3',
           html: [
-            $('<h5>', {
-              'class': 'card-header',
+            $('<h2>', {
               id: id,
               text: name
             }),
-            $cardBody
+            '<hr>',
+            // get resource level paragraphs
+            textContent(resourceGroups[i])
           ]
         }))
       }
@@ -129,7 +128,7 @@
       // add list elements to right side ul
       $ol.append($list)
       // add collapse elements to article
-      $article.append($cards)
+      $article.append($divs)
     }
 
     // update DOM
@@ -144,7 +143,7 @@
             html: $aside
           }),
           $('<div>', {
-            'class': 'col py-3 px-5 ref-body',
+            'class': 'col pb-3 px-5 ref-body',
             html: $article
           }),
           $('<div>', {
