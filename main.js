@@ -48,7 +48,7 @@
     https://github.com/apiaryio/drafter
     https://api-elements.readthedocs.io/en/latest/
     */
-    var element, elements, elementQuery
+    var elements, elementQuery
 
     // set root API Element
     elementQuery = { element: 'category', meta: { classes: 'api' } }
@@ -77,15 +77,6 @@
       }
       // add list element to right side ul
       $ol.append($list)
-    }
-
-    if (Array.isArray(refract.content)) {
-      for (i = 0; i < refract.content.length; i++) {
-        element = refract.content[i]
-        if (element.element === 'copy') {
-          $article.append(options.mdParser(element.content))
-        }
-      }
     }
 
     // update DOM
