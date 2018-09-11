@@ -74,7 +74,7 @@
             html: $aside
           }),
           $('<div>', {
-            'class': 'col pb-3 px-5 ref-body',
+            'class': 'col pt-3 px-5 ref-body',
             html: $article
           }),
           $('<div>', {

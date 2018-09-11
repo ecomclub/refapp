@@ -46,15 +46,40 @@
           if (typeof content === 'string') {
             // Markdown string
             // append to parent body element
-            $body.append('<div class="mt-3">' + options.mdParser(content) + '</div>')
+            $body.append('<div class="mb-5">' + options.mdParser(content) + '</div>')
           }
           break
 
         case 'category':
+          var className = elementMeta(refract, 'classes')
+          var title = elementMeta(refract, 'title')
+          if (title !== '') {
+            // show category title
+            var head
+            switch (className) {
+              case 'api':
+                head = 1
+                break
+              case 'resourceGroup':
+                head = 2
+                break
+              default:
+                head = 3
+            }
+            // add title to body DOM
+            $body.append([
+              $('<h' + head + '>', {
+                text: title,
+                id: title
+              }),
+              '<hr>'
+            ])
+          }
+
+          // check each child element one by one
           if (!Array.isArray(content)) {
             content = [ content ]
           }
-          // check each content one by one
           for (var i = 0; i < content.length; i++) {
             // recursion
             consume(content[i], options, $body, $list)
@@ -153,7 +178,7 @@
             html: $aside
           }),
           $('<div>', {
-            'class': 'col pb-3 px-5 ref-body',
+            'class': 'col pt-3 px-5 ref-body',
             html: $article
           }),
           $('<div>', {
