@@ -16,11 +16,13 @@
 
     <script language="javascript">
       console.log('Sample for @ecomclub/refapp', 'https://github.com/ecomclub/refapp')
-      $.getJSON('./refract.json', function (data) {
-        $('#app').refapp(data, {
-          asideClasses: 'sidebar sidebar-sticky',
-          olClasses: 'sidebar sidebar-sticky'
-        })
+      $('#app').refapp([
+        {
+          src: './refract.json'
+        }
+      ], {
+        asideClasses: 'sidebar sidebar-sticky',
+        olClasses: 'sidebar sidebar-sticky'
       })
     </script>
   </body>

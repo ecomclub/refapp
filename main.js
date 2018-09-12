@@ -12,8 +12,8 @@
   /* global apiElementMeta */
 
   // setup as jQuery plugin
-  $.fn.refapp = function (refract, Options) {
-    // @TODO: refract to refracts (work with refract fragments)
+  $.fn.refapp = function (refracts, Options) {
+    var $app = this
     // default options object
     var options = {
       // styles
@@ -42,47 +42,73 @@
     // console.log(this)
     // console.log(refract)
 
-    // start treating Refract JSON (Drafter output)
-    // API Elements format
-    /* Reference
-    https://github.com/apiaryio/drafter
-    https://api-elements.readthedocs.io/en/latest/
-    */
+    // get each refract fragment
+    if (Array.isArray(refracts)) {
+      var processRefract = function (data) {
+        var refract = data
 
-    // consume refract tree
-    while (refract) {
-      // root API Element fixed
-      refract = consumeRefract(refract, options, $article, $ol)
-      if (!options.apiTitle) {
-        // try to set API title
-        options.apiTitle = apiElementMeta(refract, 'title')
+        // start treating Refract JSON (Drafter output)
+        // API Elements format
+        /* Reference
+        https://github.com/apiaryio/drafter
+        https://api-elements.readthedocs.io/en/latest/
+        */
+
+        // consume refract tree
+        while (refract) {
+          // root API Element fixed
+          refract = consumeRefract(refract, options, $article, $ol)
+          if (!options.apiTitle) {
+            // try to set API title
+            options.apiTitle = apiElementMeta(refract, 'title')
+          }
+        }
+        if (options.apiTitle !== '') {
+          $aside.append('<h5>' + options.apiTitle + '</h5>')
+        }
+      }
+
+      // count ended requests
+      var todo = refracts.length
+      var done = 0
+      var ajaxCb = function () {
+        done++
+        if (done === todo) {
+          // update DOM
+          $app.html($('<div>', {
+            'class': 'container',
+            // compose Reference App layout
+            html: $('<div>', {
+              'class': 'row',
+              html: [
+                $('<div>', {
+                  'class': 'col-md-3 col-xl-2 pt-4 ref-sidebar',
+                  html: $aside
+                }),
+                $('<div>', {
+                  'class': 'col px-5 ref-body',
+                  html: $article
+                }),
+                $('<div>', {
+                  'class': 'col-md-2 d-none d-md-flex pt-4 ref-anchors',
+                  html: $ol
+                })
+              ]
+            })
+          }))
+        }
+      }
+
+      var invalidSource = function (jqxhr, textStatus, err) {
+        alert('Cannot GET Refract JSON: ' + textStatus)
+        console.error(err)
+      }
+
+      for (var i = 0; i < refracts.length; i++) {
+        $.getJSON(refracts[i].src, processRefract)
+          .fail(invalidSource)
+          .always(ajaxCb)
       }
     }
-    if (options.apiTitle !== '') {
-      $aside.append('<h5>' + options.apiTitle + '</h5>')
-    }
-
-    // update DOM
-    this.html($('<div>', {
-      'class': 'container',
-      // compose Reference App layout
-      html: $('<div>', {
-        'class': 'row',
-        html: [
-          $('<div>', {
-            'class': 'col-md-3 col-xl-2 pt-4 ref-sidebar',
-            html: $aside
-          }),
-          $('<div>', {
-            'class': 'col px-5 ref-body',
-            html: $article
-          }),
-          $('<div>', {
-            'class': 'col-md-2 d-none d-md-flex pt-4 ref-anchors',
-            html: $ol
-          })
-        ]
-      })
-    }))
   }
 }(jQuery))

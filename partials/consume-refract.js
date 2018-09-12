@@ -157,11 +157,11 @@
 
             // styling action card
             $body.parent().addClass('text-white bg-' + color)
-            // show request method
-            .find('h3,h4,h5').append($('<small>', {
-              'class': 'text-monospace ml-1 float-right',
-              text: method
-            }))
+              // show request method
+              .find('h3,h4,h5').append($('<small>', {
+                'class': 'text-monospace ml-1 float-right',
+                text: method
+              }))
           }
           break
 
