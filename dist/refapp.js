@@ -322,7 +322,7 @@
     // optional API title on sidebar
     if (options.apiTitle) {
       $aside.prepend($('<h5>', {
-        'class': 'mb-4',
+        'class': 'mb-3',
         text: options.apiTitle
       }))
     }
