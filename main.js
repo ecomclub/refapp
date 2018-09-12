@@ -9,6 +9,8 @@
 
   // require 'partials/consume-refract.js'
   /* global consumeRefract */
+  // require 'partials/api-console.js'
+  /* global apiConsole */
 
   // setup as jQuery plugin
   $.fn.refapp = function (refracts, Options) {
@@ -152,6 +154,9 @@
 
     // random base ID for elements
     var elId = Math.floor(Math.random() * (9999 - 1000)) + 1000
+    // init API platform app
+    var $console = apiConsole()
+    $console.attr('id', 'api-console-' + elId)
 
     // update DOM
     this.html([
@@ -175,7 +180,9 @@
             })
           ]
         })
-      })
+      }),
+      // API console app
+      $console
     ])
   }
 }(jQuery))

@@ -3,6 +3,31 @@
  * @license MIT
  */
 
+ (function ($) {
+   'use strict'
+
+   var platform = function () {
+     // returns DOM element
+     return $('<div>', {
+       'class': 'container-fluid d-none',
+       html: $('<div>', {
+         'class': 'row',
+         html: [
+           $('<header>', {
+           })
+         ]
+       })
+     })
+   }
+
+   // set globally
+   window.apiConsole = platform
+ }(jQuery))
+;/**
+ * @author E-Com Club <ti@e-com.club>
+ * @license MIT
+ */
+
 (function ($) {
   'use strict'
 
@@ -206,6 +231,8 @@
 
   // require 'partials/consume-refract.js'
   /* global consumeRefract */
+  // require 'partials/api-console.js'
+  /* global apiConsole */
 
   // setup as jQuery plugin
   $.fn.refapp = function (refracts, Options) {
@@ -349,6 +376,9 @@
 
     // random base ID for elements
     var elId = Math.floor(Math.random() * (9999 - 1000)) + 1000
+    // init API platform app
+    var $console = apiConsole()
+    $console.attr('id', 'api-console-' + elId)
 
     // update DOM
     this.html([
@@ -372,7 +402,9 @@
             })
           ]
         })
-      })
+      }),
+      // API console app
+      $console
     ])
   }
 }(jQuery))
