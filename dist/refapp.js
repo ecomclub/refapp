@@ -304,11 +304,9 @@
           }
           var title = refracts[i].title
           if (title) {
-            $aside.append($('<a>', {
-              href: 'javascript:;',
-              html: $('<h6>', {
-                text: title
-              }),
+            $aside.append($('<button>', {
+              'class': 'btn btn-light btn-block btn-sm',
+              text: title,
               click: (function (i) {
                 // local i
                 return function () {
