@@ -94,20 +94,20 @@
             })
             // add to anchors list
             $list.append($li)
-          }
 
-          doIfDeep = function () {
-            // create new deeper list for subresources
-            var $ul = $('<ul>')
-            $li.append($ul)
-            // new block for category
-            var $div = $('<div>', {
-              'class': 'mb-5'
-            })
-            $body.append($div)
-            // change body and list DOM elements
-            $body = $div
-            $list = $ul
+            doIfDeep = function () {
+              // create new deeper list for subresources
+              var $ul = $('<ul>')
+              $li.append($ul)
+              // new block for category
+              var $div = $('<div>', {
+                'class': 'mb-5'
+              })
+              $body.append($div)
+              // change body and list DOM elements
+              $body = $div
+              $list = $ul
+            }
           }
           break
 
