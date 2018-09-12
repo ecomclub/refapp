@@ -241,27 +241,35 @@
     if (Array.isArray(refracts)) {
       var processRefract = function (refract) {
         // reset DOM
-        $article.html('')
-        $ol.html('')
+        $ol.fadeOut(199, function () {
+          $(this).html('')
+        })
+        $article.fadeOut(200, function () {
+          $(this).html('')
 
-        // start treating Refract JSON (Drafter output)
-        // API Elements format
-        /* Reference
-        https://github.com/apiaryio/drafter
-        https://api-elements.readthedocs.io/en/latest/
-        */
-
-        // consume refract tree
-        while (refract) {
-          // root API Element fixed
-          refract = consumeRefract(refract, options, $article, $ol)
-          /*
-          if (!options.apiTitle) {
-            // try to set API title
-            options.apiTitle = apiElementMeta(refract, 'title')
-          }
+          // start treating Refract JSON (Drafter output)
+          // API Elements format
+          /* Reference
+          https://github.com/apiaryio/drafter
+          https://api-elements.readthedocs.io/en/latest/
           */
-        }
+
+          // consume refract tree
+          while (refract) {
+            // root API Element fixed
+            refract = consumeRefract(refract, options, $article, $ol)
+            /*
+            if (!options.apiTitle) {
+              // try to set API title
+              options.apiTitle = apiElementMeta(refract, 'title')
+            }
+            */
+          }
+
+          // show content again
+          $article.fadeIn()
+          $ol.fadeIn()
+        })
       }
 
       var requestFailed = function (jqxhr, textStatus, err) {
