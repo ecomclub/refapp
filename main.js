@@ -118,26 +118,28 @@
     }
 
     // update DOM
-    this.html($('<div>', {
-      'class': 'container',
-      // compose Reference App layout
-      html: $('<div>', {
-        'class': 'row',
-        html: [
-          $('<div>', {
-            'class': 'col-md-3 col-xl-2 pt-4 ref-sidebar',
-            html: $aside
-          }),
-          $('<div>', {
-            'class': 'col px-5 ref-body',
-            html: $article
-          }),
-          $('<div>', {
-            'class': 'col-md-2 d-none d-md-flex pt-4 ref-anchors',
-            html: $ol
-          })
-        ]
+    this.html([
+      $('<div>', {
+        'class': 'container',
+        // compose Reference App layout
+        html: $('<div>', {
+          'class': 'row',
+          html: [
+            $('<div>', {
+              'class': 'col-md-3 col-xl-2 pt-4 ref-sidebar',
+              html: $aside
+            }),
+            $('<div>', {
+              'class': 'col px-5 ref-body',
+              html: $article
+            }),
+            $('<div>', {
+              'class': 'col-md-2 d-none d-md-flex pt-4 ref-anchors',
+              html: $ol
+            })
+          ]
+        })
       })
-    }))
+    ])
   }
 }(jQuery))
