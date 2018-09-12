@@ -326,6 +326,26 @@
       $aside.prepend('<h5>' + options.apiTitle + '</h5>')
     }
 
+    var $Collapse = function ($menu, btnText, elId) {
+      // create collapsable elements for navs
+      return [
+        $('<a>', {
+          'class': 'btn btn-xl btn-outline-primary btn-block d-md-none',
+          'data-toggle': 'collapse',
+          'aria-expanded': 'false',
+          'aria-control': elId,
+          href: '#' + elId,
+          role: 'button',
+          html: '<i class="ti-angle-down mr-1"></i> ' + btnText
+        }),
+        $('<div>', {
+          'class': 'collapse d-md-block pt-3 pt-md-0',
+          id: elId,
+          html: $menu
+        })
+      ]
+    }
+
     // update DOM
     this.html([
       $('<div>', {
@@ -335,16 +355,16 @@
           'class': 'row',
           html: [
             $('<div>', {
-              'class': 'col-md-3 col-xl-2 pt-4 ref-sidebar',
-              html: $aside
+              'class': 'order-md-1 col-md-3 col-xl-2 pt-4 ref-sidebar',
+              html: $Collapse($aside, 'Resources', 'dskjcnjdsknc')
             }),
             $('<div>', {
-              'class': 'col px-5 ref-body',
+              'class': 'order-md-3 col-md-2 pt-4 ref-anchors',
+              html: $Collapse($ol, 'Content', 'skjdcskj')
+            }),
+            $('<div>', {
+              'class': 'order-md-2 col px-5 ref-body',
               html: $article
-            }),
-            $('<div>', {
-              'class': 'col-md-2 d-none d-md-flex pt-4 ref-anchors',
-              html: $ol
             })
           ]
         })
