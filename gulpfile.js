@@ -36,7 +36,11 @@ gulp.task('serve', function () {
     }
   })
   gulp.watch(jsFragments).on('change', doConcat)
-  gulp.watch([ './sample/**.html', './dist/refapp.js' ]).on('change', reload)
+  gulp.watch([
+    './sample/**.html',
+    './dist/refapp.js',
+    './css/*.css'
+  ]).on('change', reload)
 })
 
 gulp.task('compress', function (cb) {
