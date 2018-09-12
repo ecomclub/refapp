@@ -100,14 +100,26 @@
       }
 
       var invalidSource = function (jqxhr, textStatus, err) {
+        // AJAX error
         alert('Cannot GET Refract JSON: ' + textStatus)
         console.error(err)
       }
 
       for (var i = 0; i < refracts.length; i++) {
-        $.getJSON(refracts[i].src, processRefract)
-          .fail(invalidSource)
-          .always(ajaxCb)
+        if (typeof refracts[i] === 'object' && refracts[i] !== null) {
+          // try to GET JSON file
+          var url = refracts[i].src
+          if (typeof url === 'string' && url !== '') {
+            $.getJSON(url, processRefract)
+              .fail(invalidSource)
+              .always(ajaxCb)
+            // next fragment
+            continue
+          }
+        }
+        // something is wrong
+        ajaxCb()
+        console.error(new Error('Invalid object on refracts array (' + i + '), ignored'))
       }
     }
   }
