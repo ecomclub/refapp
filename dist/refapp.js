@@ -321,7 +321,10 @@
 
     // optional API title on sidebar
     if (options.apiTitle) {
-      $aside.prepend('<h5>' + options.apiTitle + '</h5>')
+      $aside.prepend($('<h5>', {
+        'class': 'mb-4',
+        text: options.apiTitle
+      }))
     }
 
     var $Collapse = function ($menu, btnText, elId) {
