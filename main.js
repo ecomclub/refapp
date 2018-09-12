@@ -72,6 +72,10 @@
           // show content again
           $article.fadeIn()
           $ol.fadeIn()
+          // set links to new browser tab
+          $article.find('a').filter(function () {
+            return $(this).attr('href').charAt(0) !== '#'
+          }).attr('target', '_blank')
         })
       }
 
