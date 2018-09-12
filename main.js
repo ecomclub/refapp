@@ -29,14 +29,15 @@
 
     // create DOM elements
     // main app Components
-    var $aside = $('<aside>', {
-      'class': options.asideClasses
-    })
     var $article = $('<article>', {
       'class': options.articleClasses
     })
     var $ol = $('<ol>', {
-      'class': options.olClasses
+      'class': 'ref-anchors'
+    })
+    var $aside = $('<aside>', {
+      'class': options.asideClasses,
+      html: $ol
     })
 
     // console.log(this)
@@ -46,7 +47,7 @@
     if (Array.isArray(refracts)) {
       var processRefract = function (refract) {
         // reset DOM
-        $ol.fadeOut(199, function () {
+        $ol.slideUp(199, function () {
           $(this).html('')
         })
         $article.fadeOut(200, function () {
@@ -73,7 +74,7 @@
 
           // show content again
           $article.fadeIn()
-          $ol.fadeIn()
+          $ol.slideDown('slow')
           // set links to new browser tab
           $article.find('a').filter(function () {
             return $(this).attr('href').charAt(0) !== '#'
@@ -124,21 +125,22 @@
       }
     }
 
-    var $Collapse = function ($menu, btnText, elId) {
+    var $Collapse = function ($menu, btnText, divClass) {
       // create collapsable elements for navs
+      var divId = divClass + '-' + elId
       return [
         $('<a>', {
           'class': 'btn btn-xl btn-outline-primary btn-block d-md-none',
           'data-toggle': 'collapse',
           'aria-expanded': 'false',
-          'aria-control': elId,
-          href: '#' + elId,
+          'aria-control': divId,
+          href: '#' + divId,
           role: 'button',
           html: '<i class="ti-angle-down mr-1"></i> ' + btnText
         }),
         $('<div>', {
-          'class': 'collapse d-md-block pt-3 pt-md-0',
-          id: elId,
+          'class': 'collapse d-md-block pt-3 pt-md-0 ' + divClass,
+          id: divId,
           html: $menu
         })
       ]
@@ -148,7 +150,7 @@
     var elId = Math.floor(Math.random() * (9999 - 1000)) + 1000
     // init API platform app
     var $console = apiConsole()
-    $console.attr('id', 'api-console-' + elId)
+    $console.hide()
 
     // Reference App body HTML
     var body = []
@@ -162,30 +164,27 @@
     body.push($article)
 
     // update DOM
-    this.html([
-      $('<div>', {
-        'class': 'container',
-        // compose Reference App layout
-        html: $('<div>', {
-          'class': 'row',
-          html: [
-            $('<div>', {
-              'class': 'order-md-1 col-md-3 col-xl-2 pt-4 ref-sidebar',
-              html: $Collapse($aside, 'API Resources', 'ref-sidebar-' + elId)
-            }),
-            $('<div>', {
-              'class': 'order-md-3 col-md-2 pt-4 ref-anchors',
-              html: $Collapse($ol, 'Content', 'ref-anchors-' + elId)
-            }),
-            $('<div>', {
-              'class': 'order-md-2 col px-md-5 ref-body',
-              html: body
-            })
-          ]
-        })
-      }),
-      // API console app
-      $console
-    ])
+    this.html($('<div>', {
+      'class': 'container',
+      // compose Reference App layout
+      html: $('<div>', {
+        'class': 'row',
+        html: [
+          $('<div>', {
+            'class': 'col-md-3 col-xl-2 pt-4',
+            html: $Collapse($aside, 'Content', 'ref-sidebar')
+          }),
+          $('<div>', {
+            'class': 'col-md-9 col-lg-5 col-xl-6 px-md-5 ref-body',
+            html: body
+          }),
+          $('<div>', {
+            'class': 'col col-lg-4 ref-console top-fixed bg-dark',
+            // API console app
+            html: $console
+          })
+        ]
+      })
+    }))
   }
 }(jQuery))
