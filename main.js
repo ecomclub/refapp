@@ -124,14 +124,6 @@
       }
     }
 
-    // optional API title on sidebar
-    if (options.apiTitle) {
-      $aside.prepend($('<h5>', {
-        'class': 'mb-3',
-        text: options.apiTitle
-      }))
-    }
-
     var $Collapse = function ($menu, btnText, elId) {
       // create collapsable elements for navs
       return [
@@ -158,6 +150,17 @@
     var $console = apiConsole()
     $console.attr('id', 'api-console-' + elId)
 
+    // Reference App body HTML
+    var body = []
+    // optional API title
+    if (options.apiTitle) {
+      body.push($('<h1>', {
+        'class': 'mt-3 mb-4 text-muted',
+        text: options.apiTitle
+      }))
+    }
+    body.push($article)
+
     // update DOM
     this.html([
       $('<div>', {
@@ -176,7 +179,7 @@
             }),
             $('<div>', {
               'class': 'order-md-2 col px-5 ref-body',
-              html: $article
+              html: body
             })
           ]
         })
