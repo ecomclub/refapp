@@ -191,5 +191,5 @@
 
   // set globally
   window.consumeRefract = consume
-  window.apiElementMeta = elementMeta
+  // window.apiElementMeta = elementMeta
 }(jQuery))
