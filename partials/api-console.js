@@ -21,7 +21,7 @@
          $('<header>', {
            'class': 'navbar navbar-light bg-light',
            html: $('<form>', {
-             'class': 'container py-1',
+             'class': 'container py-1 px-0',
              action: 'javascript:;',
              html: $('<div>', {
                'class': 'input-group',

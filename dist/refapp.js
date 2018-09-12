@@ -21,7 +21,7 @@
          $('<header>', {
            'class': 'navbar navbar-light bg-light',
            html: $('<form>', {
-             'class': 'container py-1',
+             'class': 'container py-1 px-0',
              action: 'javascript:;',
              html: $('<div>', {
                'class': 'input-group',
@@ -449,7 +449,7 @@
               html: $Collapse($ol, 'Content', 'ref-anchors-' + elId)
             }),
             $('<div>', {
-              'class': 'order-md-2 col px-5 ref-body',
+              'class': 'order-md-2 col px-md-5 ref-body',
               html: body
             })
           ]
