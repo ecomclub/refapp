@@ -346,6 +346,9 @@
       ]
     }
 
+    // random base ID for elements
+    var elId = Math.floor(Math.random() * (9999 - 1000)) + 1000
+
     // update DOM
     this.html([
       $('<div>', {
@@ -356,11 +359,11 @@
           html: [
             $('<div>', {
               'class': 'order-md-1 col-md-3 col-xl-2 pt-4 ref-sidebar',
-              html: $Collapse($aside, 'Resources', 'dskjcnjdsknc')
+              html: $Collapse($aside, 'Resources', 'ref-sidebar-' + elId)
             }),
             $('<div>', {
               'class': 'order-md-3 col-md-2 pt-4 ref-anchors',
-              html: $Collapse($ol, 'Content', 'skjdcskj')
+              html: $Collapse($ol, 'Content', 'ref-anchors-' + elId)
             }),
             $('<div>', {
               'class': 'order-md-2 col px-5 ref-body',
