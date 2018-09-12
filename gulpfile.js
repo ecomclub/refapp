@@ -7,7 +7,7 @@ const pump = require('pump')
 const rename = require('gulp-rename')
 
 let jsFragments = [
-  './partials/consume-refract.js',
+  './partials/*.js',
   './main.js'
 ]
 
@@ -36,7 +36,7 @@ gulp.task('serve', function () {
     }
   })
   gulp.watch(jsFragments).on('change', doConcat)
-  gulp.watch([ './sample/*.html', './dist/refapp.js' ]).on('change', reload)
+  gulp.watch([ './sample/**.html', './dist/refapp.js' ]).on('change', reload)
 })
 
 gulp.task('compress', function (cb) {
