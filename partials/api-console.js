@@ -19,7 +19,7 @@
        html: [
          // API endpoint bar
          $('<header>', {
-           'class': 'navbar navbar-light bg-light',
+           'class': 'navbar navbar-light bg-light fixed-top',
            html: $('<form>', {
              'class': 'container py-1 px-0',
              action: 'javascript:;',
@@ -36,7 +36,7 @@
                        text: 'Params'
                      }),
                      $('<select>', {
-                       'class': 'rounded-0 custom-select',
+                       'class': 'rounded-0 border-left-0 border-right-0 custom-select',
                        html: [
                          $('<option>', {
                            value: 'GET',
