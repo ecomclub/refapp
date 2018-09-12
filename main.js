@@ -163,7 +163,7 @@
           html: [
             $('<div>', {
               'class': 'order-md-1 col-md-3 col-xl-2 pt-4 ref-sidebar',
-              html: $Collapse($aside, 'Resources', 'ref-sidebar-' + elId)
+              html: $Collapse($aside, 'API Resources', 'ref-sidebar-' + elId)
             }),
             $('<div>', {
               'class': 'order-md-3 col-md-2 pt-4 ref-anchors',
