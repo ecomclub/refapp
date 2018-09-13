@@ -266,13 +266,18 @@
     var $article = $('<article>', {
       'class': options.articleClasses
     })
+    var $list = $('<div>', {
+      'class': 'list-group my-3 ref-resources'
+    })
     var $ol = $('<ol>', {
-      'class': 'ref-anchors'
+      'class': 'my-3 ref-anchors'
     })
     var $aside = $('<aside>', {
       'class': options.asideClasses,
       html: [
-        '<h2>Resources</h2>',
+        '<h5>Reference</h5>',
+        $list,
+        '<h5>Summary</h5>',
         $ol
       ]
     })
@@ -282,7 +287,7 @@
 
     // get each refract fragment
     if (Array.isArray(refracts)) {
-      var processRefract = function (refract, $ol) {
+      var processRefract = function (refract) {
         // reset DOM
         $ol.slideUp(199, function () {
           $(this).html('')
@@ -325,11 +330,11 @@
         console.error(err)
       }
 
-      var getRefract = function (i, $ol) {
+      var getRefract = function (i) {
         // try to GET JSON file
         var url = refracts[i].src
         if (typeof url === 'string' && url !== '') {
-          $.getJSON(url, function (data) { processRefract(data, $ol) })
+          $.getJSON(url, function (data) { processRefract(data) })
             .fail(requestFailed)
         } else {
           console.error(new Error('Invalid or undefined src string on refract (' + i + '), ignored'))
@@ -342,29 +347,23 @@
         if (typeof refracts[i] === 'object' && refracts[i] !== null) {
           var title = refracts[i].title
           if (title) {
-            // new children list
-            var $ul = $('<ul>')
             var $resource = $('<a>', {
+              'class': 'list-group-item list-group-item-action',
               href: 'javascript:;',
               text: title,
-              click: (function (i, $ul) {
-                // local i and $ul
+              click: (function (i) {
+                // local i
                 return function () {
-                  // clear last active li
-                  $ol.find('a.active').removeClass('active').next('ul').slideUp()
+                  // clear last active
+                  $list.find('a.active').removeClass('active')
                   $(this).addClass('active')
-                  getRefract(i, $ul)
+                  getRefract(i)
                 }
-              }(i, $ul))
+              }(i))
             })
 
             // add resource to list DOM
-            $ol.append($('<li>', {
-              html: [
-                $resource,
-                $ul
-              ]
-            }))
+            $list.append($resource)
             if (!started) {
               // start with the first refract fragment
               $resource.click()
@@ -383,10 +382,10 @@
 
     // create collapsable elements for navs
     var divId = 'ref-anchors-' + elId
-    $aside.addClass('collapse d-md-block mt-3').attr('id', divId)
+    $aside.addClass('collapse d-md-block').attr('id', divId)
     var $sidebar = [
       $('<a>', {
-        'class': 'btn btn-xl btn-outline-primary btn-block d-md-none mt-3',
+        'class': 'btn btn-xl btn-outline-primary btn-block d-md-none mb-3',
         'data-toggle': 'collapse',
         'aria-expanded': 'false',
         'aria-control': divId,
@@ -419,10 +418,7 @@
             'class': 'col-md-6 ref-sidebar',
             html: [
               $('<section>', {
-                'class': 'bg-light mr-md-5 px-5 py-2 border sticky-top',
-                css: {
-                  'height': '100vh'
-                },
+                'class': 'mr-md-3 mr-ml-4 mr-lg-5 px-4 px-lg-5 py-4 sticky-top',
                 html: $sidebar
               }),
               // add API console to DOM
