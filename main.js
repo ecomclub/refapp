@@ -144,13 +144,14 @@
     var elId = Math.floor(Math.random() * (9999 - 1000)) + 1000
     // init API platform app
     var $console = apiConsole()
-    $console.hide()
+    // $console.hide()
 
     // create collapsable elements for navs
     var divId = 'ref-anchors-' + elId
+    $aside.addClass('collapse d-md-block mt-3').attr('id', divId)
     var $sidebar = [
       $('<a>', {
-        'class': 'btn btn-xl btn-outline-primary btn-block d-md-none',
+        'class': 'btn btn-xl btn-outline-primary btn-block d-md-none mt-3',
         'data-toggle': 'collapse',
         'aria-expanded': 'false',
         'aria-control': divId,
@@ -158,14 +159,8 @@
         role: 'button',
         html: '<i class="ti-angle-down mr-1"></i> Content'
       }),
-      $('<div>', {
-        'class': 'collapse d-md-block pt-3 pt-md-0',
-        id: divId,
-        html: $aside
-      })
+      $aside
     ]
-    // add API console to DOM
-    $sidebar.push($console)
 
     // Reference App body HTML
     var body = []
@@ -186,11 +181,21 @@
         'class': 'row',
         html: [
           $('<div>', {
-            'class': 'col-md-5 col-xl-4 pt-3 ref-sidebar',
-            html: $sidebar
+            'class': 'col-md-6 ref-sidebar',
+            html: [
+              $('<section>', {
+                'class': 'bg-light mr-md-5 px-5 py-2 border sticky-top',
+                css: {
+                  'height': '100vh'
+                },
+                html: $sidebar
+              }),
+              // add API console to DOM
+              $console
+            ]
           }),
           $('<div>', {
-            'class': 'col-md-7 col-xl-8 px-md-5 ref-body',
+            'class': 'col-md-6 ref-body',
             html: body
           })
         ]

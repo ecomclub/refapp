@@ -7,54 +7,20 @@
    'use strict'
 
    var platform = function () {
-     // create main DOM element
-     var $inputUrl = $('<input>', {
-       'class': 'form-control',
-       type: 'search',
-       placeholder: 'Enter request URL'
-     })
-
      // returns DOM element
      return $('<section>', {
+       'class': 'bg-light',
+       css: {
+         height: '100vh',
+         position: 'absolute',
+         top: 0,
+         display: 'none',
+         width: '100%'
+       },
        html: [
          // API endpoint bar
          $('<header>', {
-           'class': 'navbar navbar-light bg-light fixed-top',
-           html: $('<form>', {
-             'class': 'container py-1 px-0',
-             action: 'javascript:;',
-             html: $('<div>', {
-               'class': 'input-group',
-               html: [
-                 $inputUrl,
-                 $('<div>', {
-                   'class': 'input-group-append',
-                   html: [
-                     $('<button>', {
-                       'class': 'btn btn-outline-secondary',
-                       type: 'button',
-                       text: 'Params'
-                     }),
-                     $('<select>', {
-                       'class': 'rounded-0 border-left-0 border-right-0 custom-select',
-                       html: [
-                         $('<option>', {
-                           value: 'GET',
-                           text: 'GET',
-                           selected: true
-                         })
-                       ]
-                     }),
-                     $('<button>', {
-                       'class': 'btn btn-primary',
-                       type: 'submit',
-                       text: 'Send'
-                     })
-                   ]
-                 })
-               ]
-             })
-           })
+           'class': 'fixed-top'
          }),
 
          // App body
