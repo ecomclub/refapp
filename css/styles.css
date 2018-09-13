@@ -9,18 +9,6 @@
   opacity: 1;
 }
 
-.ref-anchors li {
-  font-size: 97%;
-}
-.ref-anchors > ul,
-.ref-anchors > ol {
-  padding-left: 2rem;
-}
-.ref-anchors li ul,
-.ref-anchors li ol {
-  padding-left: 1rem;
-}
-
 .ref-body a.card {
   text-decoration: none;
 }

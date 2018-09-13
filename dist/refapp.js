@@ -288,7 +288,6 @@
       // styles
       asideClasses: '',
       articleClasses: '',
-      olClasses: '',
       // parse Markdown to HTML
       mdParser: function (md) { return md }
     }
