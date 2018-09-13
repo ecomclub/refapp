@@ -158,7 +158,9 @@
         role: 'button',
         html: '<i class="ti-angle-down mr-1"></i> Content'
       }),
-      $aside
+      $aside,
+      // add API console to DOM
+      $console
     ]
 
     // Reference App body HTML
@@ -185,9 +187,7 @@
               $('<section>', {
                 'class': 'mr-md-3 mr-ml-4 mr-lg-5 px-4 px-lg-5 py-4 sticky-top',
                 html: $sidebar
-              }),
-              // add API console to DOM
-              $console
+              })
             ]
           }),
           $('<div>', {
