@@ -171,9 +171,7 @@
 
             doIfDeep = function () {
               // create new deeper list for subresources
-              var $ul = $('<ul>', {
-                'class': 'list-unstyled'
-              })
+              var $ul = $('<ul>')
               $li.append($ul)
               // new block for category
               var $div = $('<div>', {
@@ -308,7 +306,10 @@
     })
     var $aside = $('<aside>', {
       'class': options.asideClasses,
-      html: $ol
+      html: [
+        '<h2>Resources</h2>',
+        $ol
+      ]
     })
 
     // console.log(this)
@@ -316,7 +317,7 @@
 
     // get each refract fragment
     if (Array.isArray(refracts)) {
-      var processRefract = function (refract) {
+      var processRefract = function (refract, $ol) {
         // reset DOM
         $ol.slideUp(199, function () {
           $(this).html('')
@@ -359,11 +360,11 @@
         console.error(err)
       }
 
-      var getRefract = function (i) {
+      var getRefract = function (i, $ol) {
         // try to GET JSON file
         var url = refracts[i].src
         if (typeof url === 'string' && url !== '') {
-          $.getJSON(url, processRefract)
+          $.getJSON(url, function (data) { processRefract(data, $ol) })
             .fail(requestFailed)
         } else {
           console.error(new Error('Invalid or undefined src string on refract (' + i + '), ignored'))
@@ -374,47 +375,39 @@
       // list all fragments
       for (var i = 0; i < refracts.length; i++) {
         if (typeof refracts[i] === 'object' && refracts[i] !== null) {
-          if (!started) {
-            // start with the first refract fragment
-            getRefract(i)
-            started = true
-          }
           var title = refracts[i].title
           if (title) {
-            $aside.append($('<button>', {
-              'class': 'btn btn-light btn-block btn-sm',
+            // new children list
+            var $ul = $('<ul>')
+            var $resource = $('<a>', {
+              href: 'javascript:;',
               text: title,
-              click: (function (i) {
-                // local i
+              click: (function (i, $ul) {
+                // local i and $ul
                 return function () {
-                  getRefract(i)
+                  // clear last active li
+                  $ol.find('a.active').removeClass('active').next('ul').slideUp()
+                  $(this).addClass('active')
+                  getRefract(i, $ul)
                 }
-              }(i))
+              }(i, $ul))
+            })
+
+            // add resource to list DOM
+            $ol.append($('<li>', {
+              html: [
+                $resource,
+                $ul
+              ]
             }))
+            if (!started) {
+              // start with the first refract fragment
+              $resource.click()
+              started = true
+            }
           }
         }
       }
-    }
-
-    var $Collapse = function ($menu, btnText, divClass) {
-      // create collapsable elements for navs
-      var divId = divClass + '-' + elId
-      return [
-        $('<a>', {
-          'class': 'btn btn-xl btn-outline-primary btn-block d-md-none',
-          'data-toggle': 'collapse',
-          'aria-expanded': 'false',
-          'aria-control': divId,
-          href: '#' + divId,
-          role: 'button',
-          html: '<i class="ti-angle-down mr-1"></i> ' + btnText
-        }),
-        $('<div>', {
-          'class': 'collapse d-md-block pt-3 pt-md-0 ' + divClass,
-          id: divId,
-          html: $menu
-        })
-      ]
     }
 
     // random base ID for elements
@@ -422,6 +415,27 @@
     // init API platform app
     var $console = apiConsole()
     $console.hide()
+
+    // create collapsable elements for navs
+    var divId = 'ref-anchors-' + elId
+    var $sidebar = [
+      $('<a>', {
+        'class': 'btn btn-xl btn-outline-primary btn-block d-md-none',
+        'data-toggle': 'collapse',
+        'aria-expanded': 'false',
+        'aria-control': divId,
+        href: '#' + divId,
+        role: 'button',
+        html: '<i class="ti-angle-down mr-1"></i> Content'
+      }),
+      $('<div>', {
+        'class': 'collapse d-md-block pt-3 pt-md-0',
+        id: divId,
+        html: $aside
+      })
+    ]
+    // add API console to DOM
+    $sidebar.push($console)
 
     // Reference App body HTML
     var body = []
@@ -442,17 +456,12 @@
         'class': 'row',
         html: [
           $('<div>', {
-            'class': 'col-md-3 col-xl-2 pt-4',
-            html: $Collapse($aside, 'Content', 'ref-sidebar')
+            'class': 'col-md-5 col-xl-4 pt-3 ref-sidebar',
+            html: $sidebar
           }),
           $('<div>', {
-            'class': 'col-md-9 col-lg-5 col-xl-6 px-md-5 ref-body',
+            'class': 'col-md-7 col-xl-8 px-md-5 ref-body',
             html: body
-          }),
-          $('<div>', {
-            'class': 'col col-lg-4 ref-console top-fixed bg-dark',
-            // API console app
-            html: $console
           })
         ]
       })

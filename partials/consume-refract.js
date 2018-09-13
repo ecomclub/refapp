@@ -97,9 +97,7 @@
 
             doIfDeep = function () {
               // create new deeper list for subresources
-              var $ul = $('<ul>', {
-                'class': 'list-unstyled'
-              })
+              var $ul = $('<ul>')
               $li.append($ul)
               // new block for category
               var $div = $('<div>', {
