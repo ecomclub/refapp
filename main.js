@@ -20,7 +20,7 @@
       // parse Markdown to HTML
       mdParser: function (md) { return md },
       // callback functions for endoint actions
-      actionCallback: function (req) { console.log(req) }
+      actionCallback: function (req, res) { console.log(req, res) }
     }
     if (Options) {
       Object.assign(options, Options)
@@ -84,7 +84,8 @@
           $ol.slideDown('slow')
           // set links to new browser tab
           $article.find('a').filter(function () {
-            return $(this).attr('href').charAt(0) !== '#'
+            var attr = $(this).attr('href')
+            return (attr.charAt(0) !== '#' && attr !== 'javascript:;')
           }).attr('target', '_blank')
         })
       }

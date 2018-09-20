@@ -6,6 +6,10 @@
 (function ($) {
   'use strict'
 
+  // save request samples
+  var req = {}
+  var res = {}
+
   var elementMeta = function (element, prop) {
     // metadata from API Element object
     if (typeof element === 'object' && element !== null) {
@@ -34,7 +38,28 @@
     }
   }
 
-  var consume = function (refract, options, $body, $list) {
+  var handleHeaders = function (headers, obj) {
+    // request or response HTTP headers
+    // parse to array of nested objects
+    // { key: value }
+    if (typeof headers === 'object') {
+      headers = headers.content
+      if (Array.isArray(headers)) {
+        // reset
+        obj.headers = {}
+        for (var i = 0; i < headers.length; i++) {
+          var header = headers[i]
+          try {
+            obj.headers[header.content.key.content] = header.content.value.content
+          } catch (e) {
+            console.error('Malformed HTTP header object', header, e)
+          }
+        }
+      }
+    }
+  }
+
+  var consume = function (refract, options, $body, $list, parent) {
     var i, doIfDeep
 
     // check refract object
@@ -43,145 +68,239 @@
       // Ref.: https://api-elements.readthedocs.io/en/latest/element-definitions.html
       var type = refract.element
       var content = refract.content
-      switch (type) {
-        case 'copy':
-          if (typeof content === 'string') {
-            // Markdown string
-            // append to parent body element
-            $body.append('<div class="pb-2">' + options.mdParser(content) + '</div>')
+      // API Element attributes
+      var attr = refract.attributes
+
+      if (type !== 'httpResponse') {
+        // treat attributes first
+        if (typeof attr === 'object' && attr !== null) {
+          if (typeof attr.method === 'string') {
+            req.method = attr.method
           }
-          break
+          if (typeof attr.href === 'string') {
+            // endpoint pattern
+            req.href = attr.href
+          }
+          if (attr.headers) {
+            // request HTTP headers
+            handleHeaders(attr.headers, req)
+          }
 
-        case 'category':
-        case 'resource':
-          var className = elementMeta(refract, 'classes')
-          var title = elementMeta(refract, 'title')
-          var id = title.toLowerCase().replace(/\s/g, '-')
-          var $li
-          if (title !== '') {
-            // show category title
-            var head
-            switch (className) {
-              case 'api':
-                head = 1
-                break
-              case 'resourceGroup':
-                head = 2
-                break
-              default:
-                head = 3
+          if (attr.hrefVariables) {
+            // URL params
+            // parse to array of nested objects
+            // { key, type, value, description, required }
+            var params = attr.hrefVariables
+            if (typeof params === 'object') {
+              params = params.content
+              if (Array.isArray(params)) {
+                // reset
+                req.params = []
+                for (i = 0; i < params.length; i++) {
+                  var param = params[i]
+                  try {
+                    var paramObject = {
+                      key: param.content.key.content,
+                      // boolean required
+                      required: !(param.attributes.typeAttributes[0] === 'optional')
+                    }
+                    if (param.content.value) {
+                      paramObject.value = param.content.value.content
+                    } else {
+                      paramObject.value = ''
+                    }
+                    // optional param type and description
+                    if (param.meta) {
+                      paramObject.type = param.meta.title || ''
+                      paramObject.description = param.meta.description || ''
+                    } else {
+                      paramObject.type = paramObject.description = ''
+                    }
+
+                    // add to request params
+                    req.params.push(paramObject)
+                  } catch (e) {
+                    console.error('Malformed URL param object', param, e)
+                  }
+                }
+              }
             }
+          }
+        }
 
-            // add title to body DOM
-            $body.append($('<h' + head + '>', {
-              'class': 'my-3',
-              html: $('<a>', {
-                'class': 'anchor-link text-body',
-                href: '#' + id,
-                text: title
-              }),
-              id: id
-            }))
-            if (head <= 2) {
-              $body.append('<hr>')
+        switch (type) {
+          case 'copy':
+            if (typeof content === 'string') {
+              // Markdown string
+              // append to parent body element
+              $body.append('<div class="pb-2">' + options.mdParser(content) + '</div>')
             }
+            break
 
-            $li = $('<li>', {
-              html: $('<a>', {
-                href: '#' + id,
-                text: title
+          case 'category':
+          case 'resource':
+            var className = elementMeta(refract, 'classes')
+            var title = elementMeta(refract, 'title')
+            var id = title.toLowerCase().replace(/\s/g, '-')
+            var $li
+            if (title !== '') {
+              // show category title
+              var head
+              switch (className) {
+                case 'api':
+                  head = 1
+                  break
+                case 'resourceGroup':
+                  head = 2
+                  break
+                default:
+                  head = 3
+              }
+
+              // add title to body DOM
+              $body.append($('<h' + head + '>', {
+                'class': 'my-3',
+                html: $('<a>', {
+                  'class': 'anchor-link text-body',
+                  href: '#' + id,
+                  text: title
+                }),
+                id: id
+              }))
+              if (head <= 2) {
+                $body.append('<hr>')
+              }
+
+              $li = $('<li>', {
+                html: $('<a>', {
+                  href: '#' + id,
+                  text: title
+                })
               })
+              // add to anchors list
+              $list.append($li)
+
+              doIfDeep = function () {
+                // create new deeper list for subresources
+                var $ul = $('<ul>')
+                $li.append($ul)
+                // new block for category
+                var $div = $('<div>', {
+                  'class': 'mb-5'
+                })
+                $body.append($div)
+                // change body and list DOM elements
+                $body = $div
+                $list = $ul
+              }
+            }
+            break
+
+          case 'transition':
+            // new card block to API request
+            var $card = $('<div>', {
+              'class': 'card-body',
+              html: '<h5 class="card-title">' + elementMeta(refract, 'title') + '</h5>'
             })
-            // add to anchors list
-            $list.append($li)
+            $body.append($('<a>', {
+              href: 'javascript:;',
+              'class': 'mt-2 card',
+              html: $card,
+              // send request and response objects
+              click: (function (req, res) {
+                return function () { options.actionCallback(req, res) }
+              }(req, res))
+            }))
 
             doIfDeep = function () {
-              // create new deeper list for subresources
-              var $ul = $('<ul>')
-              $li.append($ul)
-              // new block for category
-              var $div = $('<div>', {
-                'class': 'mb-5'
-              })
-              $body.append($div)
-              // change body and list DOM elements
-              $body = $div
-              $list = $ul
+              // change body DOM element
+              $body = $card
             }
-          }
-          break
+            break
 
-        case 'transition':
-          // new card block to API request
-          var $card = $('<div>', {
-            'class': 'card-body',
-            html: '<h5 class="card-title">' + elementMeta(refract, 'title') + '</h5>'
-          })
-          $body.append($('<a>', {
-            href: '#',
-            'class': 'mt-2 card',
-            html: $card
-          }))
+          case 'httpRequest':
+            if (req.method) {
+              var color
+              switch (req.method) {
+                case 'POST':
+                  color = 'success'
+                  break
+                case 'PATCH':
+                  color = 'warning'
+                  break
+                case 'PUT':
+                  color = 'secondary'
+                  break
+                case 'DELETE':
+                  color = 'danger'
+                  break
+                case 'GET':
+                  color = 'info'
+                  break
+                default:
+                  color = 'light'
+              }
 
-          doIfDeep = function () {
-            // change body DOM element
-            $body = $card
-          }
-          break
-
-        case 'httpRequest':
-          // treat API Element attributes
-          var attr = refract.attributes
-          if (typeof attr === 'object' && attr !== null) {
-            var method = attr.method
-            var color
-            switch (method) {
-              case 'POST':
-                color = 'success'
-                break
-              case 'PATCH':
-                color = 'warning'
-                break
-              case 'PUT':
-                color = 'secondary'
-                break
-              case 'DELETE':
-                color = 'danger'
-                break
-              case 'GET':
-                color = 'info'
-                break
-              default:
-                color = 'light'
+              // styling action card
+              $body.parent().addClass('text-white bg-' + color)
+                // show request method
+                .find('h3,h4,h5').append($('<small>', {
+                  'class': 'text-monospace ml-1 float-right',
+                  text: req.method
+                }))
             }
+            break
 
-            // styling action card
-            $body.parent().addClass('text-white bg-' + color)
-              // show request method
-              .find('h3,h4,h5').append($('<small>', {
-                'class': 'text-monospace ml-1 float-right',
-                text: method
-              }))
-          }
-          break
+          case 'asset':
+            if (typeof content === 'string') {
+              // body content
+              switch (parent) {
+                case 'httpRequest':
+                  // request body string
+                  req.body = content
+                  break
+                case 'httpResponse':
+                  // response body
+                  res.body = content
+                  break
+              }
+            }
+            break
 
-        case 'parseResult':
-          if (Array.isArray(content)) {
-            // fix root API Element
-            return content[0]
-          }
+          case 'parseResult':
+            if (Array.isArray(content)) {
+              // fix root API Element
+              return content[0]
+            }
+        }
+      } else {
+        // sample response
+        if (attr.headers) {
+          // response HTTP headers
+          handleHeaders(attr.headers, res)
+        } else {
+          // no headers
+          res.headers = []
+        }
+
+        // HTTP status
+        if (attr.statusCode) {
+          res.status = parseInt(attr.statusCode, 10)
+        } else {
+          res.status = 200
+        }
       }
-    }
 
-    // check each child element one by one
-    if (Array.isArray(content) && content.length) {
-      if (doIfDeep) {
-        doIfDeep()
-      }
-      // create new deeper list for subresources
-      for (i = 0; i < content.length; i++) {
-        // recursion
-        consume(content[i], options, $body, $list)
+      // check each child element one by one
+      if (Array.isArray(content) && content.length) {
+        if (doIfDeep) {
+          doIfDeep()
+        }
+        // create new deeper list for subresources
+        for (i = 0; i < content.length; i++) {
+          // recursion
+          consume(content[i], options, $body, $list, type)
+        }
       }
     }
 
@@ -215,7 +334,7 @@
       // parse Markdown to HTML
       mdParser: function (md) { return md },
       // callback functions for endoint actions
-      actionCallback: function (req) { console.log(req) }
+      actionCallback: function (req, res) { console.log(req, res) }
     }
     if (Options) {
       Object.assign(options, Options)
@@ -279,7 +398,8 @@
           $ol.slideDown('slow')
           // set links to new browser tab
           $article.find('a').filter(function () {
-            return $(this).attr('href').charAt(0) !== '#'
+            var attr = $(this).attr('href')
+            return (attr.charAt(0) !== '#' && attr !== 'javascript:;')
           }).attr('target', '_blank')
         })
       }
