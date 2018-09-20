@@ -60,7 +60,7 @@
   }
 
   var consume = function (refract, options, $body, $list, parent) {
-    var i, doIfDeep
+    var i, doIfDeep, className
 
     // check refract object
     if (typeof refract === 'object' && refract !== null) {
@@ -139,7 +139,7 @@
 
           case 'category':
           case 'resource':
-            var className = elementMeta(refract, 'classes')
+            className = elementMeta(refract, 'classes')
             var title = elementMeta(refract, 'title')
             var id = title.toLowerCase().replace(/\s/g, '-')
             var $li
@@ -254,15 +254,25 @@
           case 'asset':
             if (typeof content === 'string') {
               // body content
+              var obj
               switch (parent) {
                 case 'httpRequest':
                   // request body string
-                  req.body = content
+                  obj = req
                   break
                 case 'httpResponse':
                   // response body
-                  res.body = content
+                  obj = res
                   break
+              }
+              if (obj) {
+                className = elementMeta(refract, 'classes')
+                if (className === 'messageBodySchema') {
+                  // JSON Schema
+                  obj.schema = content
+                } else {
+                  obj.body = content
+                }
               }
             }
             break
