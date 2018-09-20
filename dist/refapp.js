@@ -343,7 +343,9 @@
       articleClasses: '',
       // parse Markdown to HTML
       mdParser: function (md) { return md },
-      // callback functions for endoint actions
+      // optional callback function for loaded refracts
+      refractCallback: null,
+      // callback function for endoint actions
       actionCallback: function (req, res) { console.log(req, res) }
     }
     if (Options) {
@@ -377,6 +379,11 @@
     // get each refract fragment
     if (Array.isArray(refracts)) {
       var processRefract = function (refract) {
+        if (typeof options.refractCallback === 'function') {
+          // send refract object
+          options.refractCallback(refract)
+        }
+
         // reset DOM
         $ol.slideUp(199, function () {
           $(this).html('')
