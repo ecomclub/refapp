@@ -18,7 +18,9 @@
       asideClasses: '',
       articleClasses: '',
       // parse Markdown to HTML
-      mdParser: function (md) { return md }
+      mdParser: function (md) { return md },
+      // callback functions for endoint actions
+      actionCallback: function (req) { console.log(req) }
     }
     if (Options) {
       Object.assign(options, Options)
@@ -174,7 +176,7 @@
         'class': 'row',
         html: [
           $('<div>', {
-            'class': 'col-md-6 ref-sidebar',
+            'class': 'col-md-5 col-xl-4 ref-sidebar',
             html: [
               $('<section>', {
                 'class': 'mr-md-3 mr-ml-4 mr-lg-5 px-4 px-lg-5 py-4 sticky-top',
@@ -183,7 +185,7 @@
             ]
           }),
           $('<div>', {
-            'class': 'col-md-6 ref-body',
+            'class': 'col-md-7 col-xl-8 ref-body',
             html: body
           })
         ]
