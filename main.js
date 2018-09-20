@@ -9,8 +9,6 @@
 
   // require 'partials/consume-refract.js'
   /* global consumeRefract */
-  // require 'partials/api-console.js'
-  /* global apiConsole */
 
   // setup as jQuery plugin
   $.fn.refapp = function (refracts, Options) {
@@ -141,10 +139,6 @@
 
     // random base ID for elements
     var elId = Math.floor(Math.random() * (9999 - 1000)) + 1000
-    // init API platform app
-    var $console = apiConsole()
-    // $console.hide()
-
     // create collapsable elements for navs
     var divId = 'ref-anchors-' + elId
     $aside.addClass('collapse d-md-block').attr('id', divId)
@@ -158,9 +152,7 @@
         role: 'button',
         html: '<i class="ti-angle-down mr-1"></i> Content'
       }),
-      $aside,
-      // add API console to DOM
-      $console
+      $aside
     ]
 
     // Reference App body HTML
