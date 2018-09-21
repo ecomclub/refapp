@@ -34,10 +34,10 @@
       'class': options.articleClasses
     })
     var $list = $('<div>', {
-      'class': 'list-group my-3 ref-resources'
+      'class': 'list-group my-3 mr-md-5 pr-lg-3 pr-xl-5 ref-resources'
     })
     var $ol = $('<ol>', {
-      'class': 'my-3 ref-anchors'
+      'class': 'ref-anchors'
     })
     var $aside = $('<aside>', {
       'class': options.asideClasses,
@@ -61,39 +61,40 @@
         }
 
         // reset DOM
-        $ol.slideUp(199, function () {
+        $ol.slideUp(200, function () {
           $(this).html('')
-        })
-        $article.fadeOut(200, function () {
-          $(this).html('')
+          // fade article content
+          $article.fadeOut(200, function () {
+            $(this).html('')
 
-          // start treating Refract JSON (Drafter output)
-          // API Elements format
-          /* Reference
-          https://github.com/apiaryio/drafter
-          https://api-elements.readthedocs.io/en/latest/
-          */
-
-          // consume refract tree
-          while (refract) {
-            // root API Element fixed
-            refract = consumeRefract(refract, options, $article, $ol)
-            /*
-            if (!options.apiTitle) {
-              // try to set API title
-              options.apiTitle = apiElementMeta(refract, 'title')
-            }
+            // start treating Refract JSON (Drafter output)
+            // API Elements format
+            /* Reference
+            https://github.com/apiaryio/drafter
+            https://api-elements.readthedocs.io/en/latest/
             */
-          }
 
-          // show content again
-          $article.fadeIn()
-          $ol.slideDown('slow')
-          // set links to new browser tab
-          $article.find('a').filter(function () {
-            var attr = $(this).attr('href')
-            return (attr.charAt(0) !== '#' && attr !== 'javascript:;')
-          }).attr('target', '_blank')
+            // consume refract tree
+            while (refract) {
+              // root API Element fixed
+              refract = consumeRefract(refract, options, $article, $ol)
+              /*
+              if (!options.apiTitle) {
+                // try to set API title
+                options.apiTitle = apiElementMeta(refract, 'title')
+              }
+              */
+            }
+
+            // show content again
+            $article.fadeIn()
+            $ol.slideDown('slow')
+            // set links to new browser tab
+            $article.find('a').filter(function () {
+              var attr = $(this).attr('href')
+              return (attr.charAt(0) !== '#' && attr !== 'javascript:;')
+            }).attr('target', '_blank')
+          })
         })
       }
 
@@ -187,7 +188,7 @@
             'class': 'col-md-5 col-xl-4 ref-sidebar',
             html: [
               $('<section>', {
-                'class': 'mr-md-3 mr-ml-4 mr-lg-5 px-4 px-lg-5 py-4 sticky-top',
+                'class': 'py-4 sticky-top',
                 html: $sidebar
               })
             ]
