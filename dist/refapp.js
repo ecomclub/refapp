@@ -366,10 +366,10 @@
     var $aside = $('<aside>', {
       'class': options.asideClasses,
       html: [
-        '<h5>Reference</h5>',
-        $list,
         '<h5>Summary</h5>',
-        $ol
+        $ol,
+        '<h5>Reference</h5>',
+        $list
       ]
     })
 
