@@ -28,6 +28,11 @@
       Object.assign(options, Options)
     }
 
+    // random base ID for elements
+    var elId = Math.floor(Math.random() * (9999 - 1000)) + 1000
+    var mainId = 'refapp-' + elId
+    var appId = this.attr('id')
+
     // create DOM elements
     // main app Components
     var $article = $('<article>', {
@@ -131,6 +136,17 @@
                   // clear last active
                   $list.find('a.active').removeClass('active')
                   $(this).addClass('active')
+
+                  // update anchor
+                  var anchor = '#'
+                  if (appId) {
+                    anchor += appId
+                  } else {
+                    anchor += mainId
+                  }
+                  window.location.hash = anchor
+
+                  // update content
                   getRefract(i)
                 }
               }(i))
@@ -148,8 +164,6 @@
       }
     }
 
-    // random base ID for elements
-    var elId = Math.floor(Math.random() * (9999 - 1000)) + 1000
     // create collapsable elements for navs
     var divId = 'ref-anchors-' + elId
     $aside.addClass('collapse d-md-block').attr('id', divId)
@@ -179,6 +193,7 @@
 
     // update DOM
     this.html($('<div>', {
+      id: mainId,
       'class': 'container',
       // compose Reference App layout
       html: $('<div>', {
