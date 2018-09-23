@@ -56,6 +56,7 @@
 
     // console.log(this)
     // console.log(refract)
+    var baseResourceHash = 'resource/'
 
     // get each refract fragment
     if (Array.isArray(refracts)) {
@@ -126,22 +127,32 @@
         if (typeof refracts[i] === 'object' && refracts[i] !== null) {
           var title = refracts[i].title
           if (title) {
+            // generate anchor for this recfract fragment
+            var anchor = baseResourceHash + title.toLowerCase().replace(/\s/g, '-')
+
             var $resource = $('<a>', {
               'class': 'list-group-item list-group-item-action',
               href: 'javascript:;',
               text: title,
-              click: (function (i) {
-                // local i
+              'data-anchor': anchor,
+              click: (function (i, anchor) {
+                // local vars
                 return function () {
                   // clear last active
                   $list.find('a.active').removeClass('active')
                   $(this).addClass('active')
-                  // scroll to top
-                  $('html, body').animate({ scrollTop: $app.offset().top }, 'slow')
                   // update content
                   getRefract(i)
+
+                  // scroll to top
+                  $('html, body').animate({
+                    scrollTop: $app.offset().top
+                  }, 'slow', 'swing', function () {
+                    // update URL hash
+                    window.location.hash = '#' + anchor
+                  })
                 }
-              }(i))
+              }(i, anchor))
             })
 
             // add resource to list DOM
