@@ -336,6 +336,8 @@
 
   // setup as jQuery plugin
   $.fn.refapp = function (refracts, Options) {
+    // main DOM element
+    var $app = this
     // default options object
     var options = {
       // styles
@@ -354,8 +356,6 @@
 
     // random base ID for elements
     var elId = Math.floor(Math.random() * (9999 - 1000)) + 1000
-    var mainId = 'refapp-' + elId
-    var appId = this.attr('id')
 
     // create DOM elements
     // main app Components
@@ -460,16 +460,8 @@
                   // clear last active
                   $list.find('a.active').removeClass('active')
                   $(this).addClass('active')
-
-                  // update anchor
-                  var anchor = '#'
-                  if (appId) {
-                    anchor += appId
-                  } else {
-                    anchor += mainId
-                  }
-                  window.location.hash = anchor
-
+                  // scroll to top
+                  $('html, body').animate({ scrollTop: $app.offset().top }, 'slow')
                   // update content
                   getRefract(i)
                 }
@@ -516,8 +508,7 @@
     body.push($article)
 
     // update DOM
-    this.html($('<div>', {
-      id: mainId,
+    $app.html($('<div>', {
       'class': 'container',
       // compose Reference App layout
       html: $('<div>', {
