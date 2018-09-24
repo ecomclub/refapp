@@ -387,7 +387,7 @@
     // current resource anchor
     var currentAnchor, waitingHash
     $(window).on('hashchange', function () {
-      if (!(new RegExp('^#' + currentAnchor).test(location.hash))) {
+      if (currentAnchor && !(new RegExp('^#' + currentAnchor).test(location.hash))) {
         // resource changed
         // try to route
         route()
@@ -396,6 +396,11 @@
 
     var route = function () {
       var hash = location.hash
+      if (hash.slice(2).indexOf('/') === -1) {
+        // should have at least one bar
+        window.location.hash = hash + '/'
+        return route()
+      }
 
       // test refract fragment route
       for (var i = 0; i < $resources.length; i++) {
@@ -408,6 +413,14 @@
           $link.click()
           return true
         }
+      }
+
+      // rewrite Apiary default hashes
+      var parts = hash.match(/^#(reference|introduction)(\/.*)$/)
+      if (parts) {
+        window.location.hash = '#' + parts[2]
+        // route again
+        return route()
       }
 
       // not routed
