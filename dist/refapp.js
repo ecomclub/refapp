@@ -385,6 +385,7 @@
     // console.log(refract)
 
     // current resource anchor
+    var baseHash = options.baseHash
     var currentAnchor, waitingHash
     $(window).on('hashchange', function () {
       if (currentAnchor && !(new RegExp('^#' + currentAnchor).test(location.hash))) {
@@ -396,31 +397,35 @@
 
     var route = function () {
       var hash = location.hash
-      if (hash.slice(2).indexOf('/') === -1) {
-        // should have at least one bar
-        window.location.hash = hash + '/'
-        return route()
-      }
-
-      // test refract fragment route
-      for (var i = 0; i < $resources.length; i++) {
-        var $link = $resources[i]
-        if (new RegExp('^#' + $link.data('anchor')).test(hash)) {
-          // found
-          // save current hash for further update
-          waitingHash = hash
-          // start routing
-          $link.click()
-          return true
+      if (hash) {
+        if (hash.slice(baseHash.length + 1).indexOf('/') === -1) {
+          // should have at least one bar
+          window.location.hash = hash + '/'
+          return route()
         }
-      }
 
-      // rewrite Apiary default hashes
-      var parts = hash.match(/^#(reference|introduction)(\/.*)$/)
-      if (parts) {
-        window.location.hash = '#' + parts[2]
-        // route again
-        return route()
+        // test refract fragment route
+        for (var i = 0; i < $resources.length; i++) {
+          var $link = $resources[i]
+          if (new RegExp('^#' + $link.data('anchor')).test(hash)) {
+            // found
+            if (!$link.hasClass('active')) {
+              // save current hash for further update
+              waitingHash = hash
+              // start routing
+              $link.click()
+            }
+            return true
+          }
+        }
+
+        // rewrite Apiary default hashes
+        var parts = hash.match(/^#(reference|introduction)\/(.*)$/)
+        if (parts) {
+          window.location.hash = '#' + baseHash + parts[2]
+          // route again
+          return route()
+        }
       }
 
       // not routed
@@ -512,7 +517,7 @@
           var title = refracts[i].title
           if (title) {
             // generate anchor for this recfract fragment
-            var anchor = options.baseHash + title.toLowerCase().replace(/\s/g, '-') + '/'
+            var anchor = baseHash + title.toLowerCase().replace(/\s/g, '-') + '/'
 
             $resources.push($('<a>', {
               'class': 'list-group-item list-group-item-action',
