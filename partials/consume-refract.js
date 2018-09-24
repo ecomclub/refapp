@@ -297,7 +297,6 @@
           // no headers
           res.headers = []
         }
-
         // HTTP status
         if (attr.statusCode) {
           res.status = parseInt(attr.statusCode, 10)
@@ -306,7 +305,6 @@
         }
 
         // preset next request and response
-        transaction++
         // persist request URI
         Req.push({ href: req.href })
         Res.push({})
@@ -322,6 +320,11 @@
           // recursion
           consume(content[i], anchor, options, $body, $list, type)
         }
+      }
+
+      if (type === 'httpResponse') {
+        // pass to next req and res object
+        transaction++
       }
     }
 
