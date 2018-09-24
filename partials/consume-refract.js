@@ -59,7 +59,7 @@
     }
   }
 
-  var consume = function (refract, options, $body, $list, parent) {
+  var consume = function (refract, anchor, options, $body, $list, parent) {
     var i, doIfDeep, className
 
     // check refract object
@@ -141,7 +141,7 @@
           case 'resource':
             className = elementMeta(refract, 'classes')
             var title = elementMeta(refract, 'title')
-            var id = options.baseHash + title.toLowerCase().replace(/[^\w\s]/g, '').replace(/\s+/g, '-')
+            var id = anchor + title.toLowerCase().replace(/[^\w\s]/g, '').replace(/\s+/g, '-')
             var $li
             if (title !== '') {
               // show category title
@@ -309,7 +309,7 @@
         // create new deeper list for subresources
         for (i = 0; i < content.length; i++) {
           // recursion
-          consume(content[i], options, $body, $list, type)
+          consume(content[i], anchor, options, $body, $list, type)
         }
       }
     }

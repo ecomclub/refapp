@@ -59,7 +59,7 @@
     }
   }
 
-  var consume = function (refract, options, $body, $list, parent) {
+  var consume = function (refract, anchor, options, $body, $list, parent) {
     var i, doIfDeep, className
 
     // check refract object
@@ -141,7 +141,7 @@
           case 'resource':
             className = elementMeta(refract, 'classes')
             var title = elementMeta(refract, 'title')
-            var id = options.baseHash + title.toLowerCase().replace(/[^\w\s]/g, '').replace(/\s+/g, '-')
+            var id = anchor + title.toLowerCase().replace(/[^\w\s]/g, '').replace(/\s+/g, '-')
             var $li
             if (title !== '') {
               // show category title
@@ -309,7 +309,7 @@
         // create new deeper list for subresources
         for (i = 0; i < content.length; i++) {
           // recursion
-          consume(content[i], options, $body, $list, type)
+          consume(content[i], anchor, options, $body, $list, type)
         }
       }
     }
@@ -367,6 +367,7 @@
     var $list = $('<div>', {
       'class': 'list-group my-3 mr-md-5 pr-lg-3 pr-xl-5 ref-resources'
     })
+    var $resources = []
     var $ol = $('<ol>', {
       'class': 'ref-anchors'
     })
@@ -382,11 +383,40 @@
 
     // console.log(this)
     // console.log(refract)
-    var baseResourceHash = options.baseHash + 'resource/'
+
+    // current resource anchor
+    var currentAnchor, waitingHash
+    $(window).on('hashchange', function () {
+      if (!(new RegExp('^#' + currentAnchor).test(location.hash))) {
+        // resource changed
+        // try to route
+        route()
+      }
+    })
+
+    var route = function () {
+      var hash = location.hash
+
+      // test refract fragment route
+      for (var i = 0; i < $resources.length; i++) {
+        var $link = $resources[i]
+        if (new RegExp('^#' + $link.data('anchor')).test(hash)) {
+          // found
+          // save current hash for further update
+          waitingHash = hash
+          // start routing
+          $link.click()
+          return true
+        }
+      }
+
+      // not routed
+      return false
+    }
 
     // get each refract fragment
     if (Array.isArray(refracts)) {
-      var processRefract = function (refract) {
+      var processRefract = function (refract, anchor) {
         if (typeof options.refractCallback === 'function') {
           // send refract object
           options.refractCallback(refract)
@@ -409,7 +439,7 @@
             // consume refract tree
             while (refract) {
               // root API Element fixed
-              refract = consumeRefract(refract, options, $article, $ol)
+              refract = consumeRefract(refract, anchor, options, $article, $ol)
               /*
               if (!options.apiTitle) {
                 // try to set API title
@@ -420,7 +450,23 @@
 
             // show content again
             $article.fadeIn()
-            $ol.slideDown('slow')
+            $ol.slideDown('slow', function () {
+              if (waitingHash) {
+                if (waitingHash !== location.hash) {
+                  var $link = $(this).find('a[href="' + waitingHash + '"]')
+                  if ($link.length) {
+                    setTimeout(function () {
+                      // need to call native DOM click()
+                      // https://stackoverflow.com/questions/34174134
+                      $link[0].click()
+                    }, 100)
+                  }
+                }
+                // reset
+                waitingHash = null
+              }
+            })
+
             // set links to new browser tab
             $article.find('a').filter(function () {
               var attr = $(this).attr('href')
@@ -436,27 +482,26 @@
         console.error(err)
       }
 
-      var getRefract = function (i) {
+      var getRefract = function (i, anchor) {
         // try to GET JSON file
         var url = refracts[i].src
         if (typeof url === 'string' && url !== '') {
-          $.getJSON(url, function (data) { processRefract(data) })
+          $.getJSON(url, function (data) { processRefract(data, anchor) })
             .fail(requestFailed)
         } else {
           console.error(new Error('Invalid or undefined src string on refract (' + i + '), ignored'))
         }
       }
 
-      var started = false
       // list all fragments
       for (var i = 0; i < refracts.length; i++) {
         if (typeof refracts[i] === 'object' && refracts[i] !== null) {
           var title = refracts[i].title
           if (title) {
             // generate anchor for this recfract fragment
-            var anchor = baseResourceHash + title.toLowerCase().replace(/\s/g, '-')
+            var anchor = options.baseHash + title.toLowerCase().replace(/\s/g, '-') + '/'
 
-            var $resource = $('<a>', {
+            $resources.push($('<a>', {
               'class': 'list-group-item list-group-item-action',
               href: 'javascript:;',
               text: title,
@@ -468,27 +513,24 @@
                   $list.find('a.active').removeClass('active')
                   $(this).addClass('active')
                   // update content
-                  getRefract(i)
+                  getRefract(i, anchor)
 
                   // scroll to top
                   $('html, body').animate({
                     scrollTop: $app.offset().top
                   }, 'slow', 'swing', function () {
+                    // update current anchor
+                    currentAnchor = anchor
                     // update URL hash
                     window.location.hash = '#' + anchor
                   })
                 }
               }(i, anchor))
-            })
-
-            // add resource to list DOM
-            $list.append($resource)
-            if (!started) {
-              // start with the first refract fragment
-              $resource.click()
-              started = true
-            }
+            }))
           }
+
+          // add resources to list DOM
+          $list.append($resources)
         }
       }
     }
@@ -543,5 +585,11 @@
         ]
       })
     }))
+
+    // first route
+    if (!route()) {
+      // start with the first refract fragment
+      $resources[0].click()
+    }
   }
 }(jQuery))
