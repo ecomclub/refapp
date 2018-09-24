@@ -436,11 +436,6 @@
     if (Array.isArray(refracts)) {
       var firstRefract = true
       var processRefract = function (refract, anchor) {
-        if (typeof options.refractCallback === 'function') {
-          // send refract object
-          options.refractCallback(refract)
-        }
-
         // reset DOM
         $ol.slideUp(200, function () {
           $(this).html('')
@@ -474,6 +469,10 @@
               } else {
                 // scroll to content
                 $('html, body').animate({ scrollTop: $article.offset().top - 20 }, 'slow')
+              }
+              if (typeof options.refractCallback === 'function') {
+                // send refract object
+                options.refractCallback(refract)
               }
             })
 
