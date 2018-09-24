@@ -141,7 +141,7 @@
           case 'resource':
             className = elementMeta(refract, 'classes')
             var title = elementMeta(refract, 'title')
-            var id = title.toLowerCase().replace(/[^\w\s]/g, '').replace(/\s+/g, '-')
+            var id = options.baseHash + title.toLowerCase().replace(/[^\w\s]/g, '').replace(/\s+/g, '-')
             var $li
             if (title !== '') {
               // show category title
@@ -343,6 +343,8 @@
       // styles
       asideClasses: '',
       articleClasses: '',
+      // base URL hash
+      baseHash: '/',
       // parse Markdown to HTML
       mdParser: function (md) { return md },
       // optional callback function for loaded refracts
@@ -380,7 +382,7 @@
 
     // console.log(this)
     // console.log(refract)
-    var baseResourceHash = 'resource/'
+    var baseResourceHash = options.baseHash + 'resource/'
 
     // get each refract fragment
     if (Array.isArray(refracts)) {

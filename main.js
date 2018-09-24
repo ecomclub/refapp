@@ -19,6 +19,8 @@
       // styles
       asideClasses: '',
       articleClasses: '',
+      // base URL hash
+      baseHash: '/',
       // parse Markdown to HTML
       mdParser: function (md) { return md },
       // optional callback function for loaded refracts
@@ -56,7 +58,7 @@
 
     // console.log(this)
     // console.log(refract)
-    var baseResourceHash = 'resource/'
+    var baseResourceHash = options.baseHash + 'resource/'
 
     // get each refract fragment
     if (Array.isArray(refracts)) {
