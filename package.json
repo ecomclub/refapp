@@ -1,6 +1,6 @@
 {
   "name": "refapp",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "Parse Refract JSON to API Reference Jquery SPA",
   "main": "main.js",
   "scripts": {
