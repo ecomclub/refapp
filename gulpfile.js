@@ -43,6 +43,8 @@ gulp.task('serve', function () {
   ]).on('change', reload)
 })
 
+gulp.task('concat', doConcat)
+
 gulp.task('compress', function (cb) {
   // compress file
   pump([
