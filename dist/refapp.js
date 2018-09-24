@@ -473,7 +473,7 @@
                 firstRefract = false
               } else {
                 // scroll to content
-                $('html, body').animate({ scrollTop: $article.offset().top }, 'slow')
+                $('html, body').animate({ scrollTop: $article.offset().top - 15 }, 'slow')
               }
             })
 
