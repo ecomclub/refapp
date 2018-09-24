@@ -434,6 +434,7 @@
 
     // get each refract fragment
     if (Array.isArray(refracts)) {
+      var firstRefract = true
       var processRefract = function (refract, anchor) {
         if (typeof options.refractCallback === 'function') {
           // send refract object
@@ -467,7 +468,15 @@
             }
 
             // show content again
-            $article.fadeIn()
+            $article.fadeIn('slow', function () {
+              if (firstRefract) {
+                firstRefract = false
+              } else {
+                // scroll to content
+                $('html, body').animate({ scrollTop: $article.offset().top }, 'slow')
+              }
+            })
+
             $ol.slideDown('slow', function () {
               if (waitingHash) {
                 if (waitingHash !== location.hash) {
@@ -534,9 +543,7 @@
                   getRefract(i, anchor)
 
                   // scroll to top
-                  $('html, body').animate({
-                    scrollTop: $app.offset().top
-                  }, 'slow', 'swing', function () {
+                  $('html, body').animate({ scrollTop: 0 }, 'slow', 'swing', function () {
                     // update current anchor
                     currentAnchor = anchor
                     // update URL hash
