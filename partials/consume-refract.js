@@ -7,8 +7,9 @@
   'use strict'
 
   // save request samples
-  var req = {}
-  var res = {}
+  var transaction = 0
+  var Req = [{}]
+  var Res = [{}]
 
   var elementMeta = function (element, prop) {
     // metadata from API Element object
@@ -70,6 +71,10 @@
       var content = refract.content
       // API Element attributes
       var attr = refract.attributes
+
+      // get request and response objects
+      var req = Req[transaction]
+      var res = Res[transaction]
 
       if (type !== 'httpResponse') {
         // treat attributes first
@@ -207,9 +212,9 @@
               'class': 'mt-2 card',
               html: $card,
               // send request and response objects
-              click: (function (req, res) {
-                return function () { options.actionCallback(req, res) }
-              }(req, res))
+              click: (function (i) {
+                return function () { options.actionCallback(Req[i], Res[i]) }
+              }(transaction))
             }))
 
             doIfDeep = function () {
@@ -299,6 +304,12 @@
         } else {
           res.status = 200
         }
+
+        // preset next request and response
+        transaction++
+        // persist request URI
+        Req.push({ href: req.href })
+        Res.push({})
       }
 
       // check each child element one by one

@@ -111,7 +111,7 @@
     // get each refract fragment
     if (Array.isArray(refracts)) {
       var firstRefract = true
-      var processRefract = function (refract, anchor) {
+      var processRefract = function (Refract, anchor) {
         // reset DOM
         $ol.slideUp(200, function () {
           $(this).html('')
@@ -127,6 +127,7 @@
             */
 
             // consume refract tree
+            var refract = Object.assign({}, Refract)
             while (refract) {
               // root API Element fixed
               refract = consumeRefract(refract, anchor, options, $article, $ol)
@@ -148,7 +149,7 @@
               }
               if (typeof options.refractCallback === 'function') {
                 // send refract object
-                options.refractCallback(refract)
+                options.refractCallback(Refract)
               }
             })
 
