@@ -61,7 +61,7 @@
   }
 
   var consume = function (refract, anchor, options, $body, $list, parent) {
-    var i, doIfDeep, className
+    var i, doIfDeep, className, title
 
     // check refract object
     if (typeof refract === 'object' && refract !== null) {
@@ -145,7 +145,7 @@
           case 'category':
           case 'resource':
             className = elementMeta(refract, 'classes')
-            var title = elementMeta(refract, 'title')
+            title = elementMeta(refract, 'title')
             var id = anchor + title.toLowerCase().replace(/[^\w\s]/g, '').replace(/\s+/g, '-')
             var $li
             if (title !== '') {
@@ -203,9 +203,10 @@
 
           case 'transition':
             // new card block to API request
+            title = elementMeta(refract, 'title')
             var $card = $('<div>', {
               'class': 'card-body',
-              html: '<h5 class="card-title">' + elementMeta(refract, 'title') + '</h5>'
+              html: '<h5 class="card-title">' + title + '</h5>'
             })
             $body.append($('<a>', {
               href: 'javascript:;',
@@ -221,6 +222,8 @@
               // change body DOM element
               $body = $card
             }
+            // set request title
+            req.title = title
             break
 
           case 'httpRequest':
