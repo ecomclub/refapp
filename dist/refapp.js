@@ -60,7 +60,7 @@
     }
   }
 
-  var consume = function (refract, anchor, options, $body, $list, parent) {
+  var consume = function (refract, anchor, options, $body, $list, parent, endpoint) {
     var i, doIfDeep, className, title
 
     // check refract object
@@ -199,6 +199,11 @@
                 $list = $ul
               }
             }
+
+            if (req.href) {
+              // repass default resource endpoint
+              endpoint = req.href
+            }
             break
 
           case 'transition':
@@ -309,7 +314,7 @@
 
         // preset next request and response
         // persist request URI
-        Req.push({ href: req.href })
+        Req.push({ href: (endpoint || req.href) })
         Res.push({})
       }
 
@@ -321,7 +326,7 @@
         // create new deeper list for subresources
         for (i = 0; i < content.length; i++) {
           // recursion
-          consume(content[i], anchor, options, $body, $list, type)
+          consume(content[i], anchor, options, $body, $list, type, endpoint)
         }
       }
 
