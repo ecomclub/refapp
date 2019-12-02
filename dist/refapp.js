@@ -11,6 +11,14 @@
   var Req = [{}]
   var Res = [{}]
 
+  var nodeValue = function (node) {
+    if (typeof node === 'object'  && node.content !== undefined) {
+      return node.content
+    } else {
+      return node
+    }
+  }
+
   var elementMeta = function (element, prop) {
     // metadata from API Element object
     if (typeof element === 'object' && element !== null) {
@@ -20,11 +28,9 @@
         if (!prop) {
           return meta
         } else if (meta[prop]) {
-          if (Array.isArray(meta[prop])) {
-            // returns first array element
-            return meta[prop][0]
-          } else if (typeof meta[prop] === 'object' && meta[prop].content !== undefined) {
-            return meta[prop].content
+          var node = Array.isArray(meta[prop]) ? meta[prop][0] : meta[prop]
+          if (node) {
+            return nodeValue(node)
           } else {
             return meta[prop]
           }
@@ -81,12 +87,12 @@
       if (type !== 'httpResponse') {
         // treat attributes first
         if (typeof attr === 'object' && attr !== null) {
-          if (typeof attr.method === 'string') {
-            req.method = attr.method
+          if (typeof nodeValue(attr.method) === 'string') {
+            req.method = nodeValue(attr.method)
           }
-          if (typeof attr.href === 'string') {
+          if (typeof nodeValue(attr.href) === 'string') {
             // endpoint pattern
-            req.href = attr.href
+            req.href = nodeValue(attr.href)
           }
           if (attr.headers) {
             // request HTTP headers
