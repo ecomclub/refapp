@@ -201,33 +201,36 @@
         if (typeof refracts[i] === 'object' && refracts[i] !== null) {
           var title = refracts[i].title
           if (title) {
-            // generate anchor for this recfract fragment
-            var anchor = baseHash + title.toLowerCase().replace(/\s/g, '-') + '/'
+            title = typeof title === 'object' ? title.content : title
+            if (typeof title === 'string' && title.trim() !== '') {
+              // generate anchor for this recfract fragment
+              var anchor = baseHash + title.toLowerCase().replace(/\s/g, '-') + '/'
 
-            $resources.push($('<a>', {
-              'class': 'list-group-item list-group-item-action',
-              href: 'javascript:;',
-              text: title,
-              'data-anchor': anchor,
-              click: (function (i, anchor) {
-                // local vars
-                return function () {
-                  // clear last active
-                  $list.find('a.active').removeClass('active')
-                  $(this).addClass('active')
-                  // update content
-                  getRefract(i, anchor)
+              $resources.push($('<a>', {
+                'class': 'list-group-item list-group-item-action',
+                href: 'javascript:;',
+                text: title,
+                'data-anchor': anchor,
+                click: (function (i, anchor) {
+                  // local vars
+                  return function () {
+                    // clear last active
+                    $list.find('a.active').removeClass('active')
+                    $(this).addClass('active')
+                    // update content
+                    getRefract(i, anchor)
 
-                  // scroll to top
-                  $('html, body').animate({ scrollTop: 0 }, 'slow', 'swing', function () {
-                    // update current anchor
-                    currentAnchor = anchor
-                    // update URL hash
-                    window.location.hash = '#' + anchor
-                  })
-                }
-              }(i, anchor))
-            }))
+                    // scroll to top
+                    $('html, body').animate({ scrollTop: 0 }, 'slow', 'swing', function () {
+                      // update current anchor
+                      currentAnchor = anchor
+                      // update URL hash
+                      window.location.hash = '#' + anchor
+                    })
+                  }
+                }(i, anchor))
+              }))
+            }
           }
 
           // add resources to list DOM
