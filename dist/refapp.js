@@ -23,6 +23,8 @@
           if (Array.isArray(meta[prop])) {
             // returns first array element
             return meta[prop][0]
+          } else if (typeof meta[prop] === 'object' && meta[prop].content !== undefined) {
+            return meta[prop].content
           } else {
             return meta[prop]
           }
@@ -116,8 +118,8 @@
                     }
                     // optional param type and description
                     if (param.meta) {
-                      paramObject.type = param.meta.title || ''
-                      paramObject.description = param.meta.description || ''
+                      paramObject.type = elementMeta(param, 'title') || ''
+                      paramObject.description = elementMeta(param, 'description') || ''
                     } else {
                       paramObject.type = paramObject.description = ''
                     }
